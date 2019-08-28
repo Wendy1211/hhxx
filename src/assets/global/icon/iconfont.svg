@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="jianpan" unicode="&#58952;" d="M921.6 896H102.4C46.08 896 0 850.752 0 795.424v-502.848C0 237.248 46.08 192 102.4 192h819.2c56.32 0 102.4 45.248 102.4 100.576V795.424C1024 850.752 977.92 896 921.6 896zM960 304c0-26.4-22.4-48-49.792-48H113.792C86.4 256 64 277.6 64 304v480C64 810.4 86.4 832 113.792 832h796.416C937.6 832 960 810.4 960 784v-480zM512-128l192 192H320l192-192z m-192 480h384v64H320v-64z m224 128h96v96h-96v-96z m32 256h-96v-96h96V736z m-192-256h96v96h-96v-96z m32 256h-96v-96h96V736z m320 0h-96v-96h96V736zM256 736H160v-96h96V736z m448-256h96v96h-96v-96z m96 160h96V736h-96v-96z m-480-64H224v-96h96v96z"  horiz-adv-x="1024" />
+
+    
+
+
+  </font>
+</defs></svg>

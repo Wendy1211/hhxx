@@ -1,0 +1,86 @@
+{
+    "code": 0,
+    "message": "获取权限成功",
+    "data": [
+        {
+            "name": "Voucher",
+            "children": [
+                {
+                    "name": "AddVoucher"
+                }, 
+                {
+                    "name": "CheckVoucher"
+                },
+                {
+                    "name": "Vsum"
+                }
+            ]
+        },
+        {
+            "name": "Account",
+            "children": [
+                {
+                    "name": "Ledger"
+                }, 
+                {
+                    "name": "Balances"
+                },
+                {
+                    "name":"Delaccount"
+                }
+            ]
+        },
+        {
+            "name": "Statement",
+            "children": [
+                {
+                    "name": "Profit"
+                },
+                {
+                    "name": "Balsheet"
+                },
+                {
+                    "name":"Cashflow"
+                } 
+            ]
+        },
+        {
+            "name": "Assets",
+            "children": [
+                {
+                    "name":"Property"
+                } 
+            ]
+        },
+        {
+            "name":"Wage",
+            "children":[
+                {
+                    "name":"Payroll"
+                }
+            ]
+        },
+        {
+            "name":"Setaccount",
+            "children":[
+                {
+                    "name":"Dispose"
+                },
+                {
+                    "name":"Detection"
+                }
+            ]
+        },
+        {
+            "name":"Set",
+            "children":[
+                {
+                    "name":"Subject"
+                },
+                {
+                    "name":"Beginning"
+                }
+            ]
+        }
+    ]
+}
