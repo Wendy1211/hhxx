@@ -1,7 +1,15 @@
 <template>
 <div class="body">
     <el-card class="card">
+      <!-- 左右切换按钮 -->
+      <div class="left" @click="handleLeft">
+        <i class="el-icon-arrow-left"></i>
+      </div>
+      <div class="right" @click="handleRight">
+        <i class="el-icon-arrow-right"></i>
+      </div>
       <div class="title">记账凭证</div>
+      <!-- 表头上 信息 -->
       <div class="title-item">
         <span >记-
           <input class="title-one">号
@@ -17,7 +25,9 @@
         <span class="title-b">2019年第5期</span>
         <span class="title-c">附单据<input class="title-four">张</span>
       </div>
+      <!-- 表内容 -->
       <div class="content">
+        <!-- 表头 -->
         <div class="content-head">
           <div class="digest">摘要</div>
           <div class="subject">会计科目</div>
@@ -63,7 +73,41 @@
         <voucherList></voucherList>
         <voucherList></voucherList>
         <voucherList></voucherList>
-        
+        <!-- 合计 -->
+        <div class="content-footer">
+          <div class="total">&nbsp;&nbsp;&nbsp;合计：</div>
+          <div class="total-borrow">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div class="total-loan">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+        <!-- 审核信息 -->
         <div class="bottom">
           <span>制作人:</span>
           <span>制作时间:</span>
@@ -72,10 +116,12 @@
         </div>
       </div>
     </el-card>
+    <!-- 保存按钮 -->
     <div class="footer">
-        <el-button size="small">保存并新增(F12)</el-button>
-        <el-button size="small">保存(Ctrl+S)</el-button>
+      <el-button size="small">保存并新增(F12)</el-button>
+      <el-button size="small">保存(Ctrl+S)</el-button>
     </div>
+    
 </div>
     
 </template>
@@ -121,6 +167,12 @@ export default {
       },
       handleSelect(item) {
         console.log(item);
+      },
+      handleRight(){
+        console.log('right')
+      },
+      handleLeft(){
+        console.log('left')
       }
     },
     mounted() {
@@ -130,7 +182,7 @@ export default {
 </script>
 <style lang="less" scoped>
 // 带建议 输入框
-.el-autocomplete /deep/.el-input /deep/.el-input__inner{
+.el-autocomplete .el-input .el-input__inner{
     padding-left: 10px !important;
     padding-right: 0px !important;
     width: 253px !important;
@@ -144,9 +196,43 @@ export default {
   margin: 0 auto;
 }
 .card {
+  position: relative;
   margin: 0px auto;
   width: 1200px;
   height: 562px;
+  // 左右切换
+  .left{
+    position: absolute;
+    top:40%;
+    left:0;
+    width: 20px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    border: 1px solid rgb(177, 174, 174);
+    background-color: rgb(177, 174, 174);
+    i{
+      color: #fff;
+      font-size: 22px;
+    }
+  }
+  .right{
+    position: absolute;
+    right: 0;
+    top:40%;
+    width: 20px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    border: 1px solid rgb(177, 174, 174);
+    background-color: rgb(177, 174, 174);
+    i{
+      color: #fff;
+      font-size: 22px;
+
+    }
+  }
+  // 表上信息
   .title {
     display: flex;
     justify-content: center;
@@ -167,7 +253,7 @@ export default {
     margin-top: 10px;
     .title-a{
       margin-left: 60px;
-      /deep/
+      
       .el-date-editor{
         width: 140px;
       }
@@ -197,154 +283,156 @@ export default {
       box-sizing: border-box;
     }
   }
+  // 表
   .content {
     width: 1020px;
     height: 560px;
     margin: 20px auto;
-    .content-head {
+    .content-head,.content-footer{
       display: flex;
       height: 60px;
       .digest {
         flex: 1;
         text-align: center;
         line-height: 60px;
-        border: 1px solid #666666;
+        border-left: 1.5px solid #666666;
+        border-top: 1.5px solid #666666;
       }
       .subject {
         flex: 1;
         text-align: center;
         line-height: 60px;
-        border: 1px solid #666666;
-      }
-      .borrow {
-        flex: 1;
-        text-align: center;
-        border: 1px solid #666666;
-        .borrow-top {
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-sizing: border-box;
-          border-bottom: 1px solid #666666;
-        }
-        .borrow-bottom {
-          height: 30px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          div {
-            flex: 1
-          }
-        }
-      }
-      .loan {
-        flex: 1;
-        text-align: center;
-        border: 1px solid #666666;
-        .loan-top {
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-bottom: 1px solid #666666;
-          box-sizing: border-box;
-        }
-        .loan-bottom {
-          height: 30px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          div {
-            flex: 1
-          }
-        }
-      }
-    }
-    .content-item {
-      height: 60px;
-      display: flex;
-      .digest {
-        flex: 1;
-        text-align: center;
-        border:1px solid #666666;
-        line-height: 60px;
-        /deep/
-        .el-select{
-          width: 303px;
-          height: 60px;
-          margin-left:0 !important;
-            .el-input__inner{
-              width: 303px;
-              height: 58px;
-            }
-          }
-      }
-      .subject {
-        flex: 1;
-        text-align: center;
-        border: 1px solid #666666;
-        line-height: 60px;
+        border-left: 1px solid #666666;
+        border-top: 1.5px solid #666666;
       }
       .total{
         flex:2;
-        display: flex;
-        padding-left: 2px;
-        box-sizing: border-box;
-        align-items: center;
-        border: 1px solid #666666;
+        padding-left: 1px;
+        line-height: 60px;
+        border-left: 1.5px solid #666666;
+        border-bottom: 1.5px solid #666666;
+        border-top: 1px solid #666666;
       }
-      .borrow {
+      .total-borrow{
         flex: 1;
-        text-align: center;
-        border: 1px solid #666666;
-        .borrow-bottom {
-          height: 60px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          div {
-            flex: 1;
-            height: 59px;
-            border-right: 1px solid #666666;
-            box-sizing: border-box;
-          }
-          div:last-child {
-            border-right: none;
-
-          }
+        width: 256px;
+        display: flex;
+        border: 1px solid #666;
+        border-bottom: 1.5px solid #666666;
+        div {
+          flex: 1;
+          border-right: 1px solid #ccc;
+        }
+        div:last-child {
+          border-right: none;
+        }
+        div:nth-child(5),div:nth-child(8) {
+          border-right: #82cef1 1px solid !important;
+        }
+        div:nth-child(11) {
+          border-right: #f3a193 1px solid !important;
         }
       }
-      .loan {
+      .total-loan{
         flex: 1;
-        text-align: center;
-        border: 1px solid #666666;
-        .loan-bottom {
-          height: 60px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          div {
-            flex: 1;
-            height: 59px;
-            border-right: 1px solid #666666;
-            box-sizing: border-box;
-          }
-          div:last-child {
-            border-right: none;
-          }
+        display: flex;
+        border-right: 1.5px solid #666666;
+        border-bottom: 1.5px solid #666666;
+        border-top: 1px solid #666666;
+        div {
+          flex: 1;
+          border-right: 1px solid #ccc;
+        }
+        div:last-child {
+          border-right: none;
+        }
+        div:nth-child(5),div:nth-child(8) {
+          border-right: #82cef1 1px solid !important;
+        }
+        div:nth-child(11) {
+          border-right: #f3a193 1px solid !important;
         }
       }
     }
-    .bottom{
-      margin-left: 40px;
-      margin-top: 20px;
-      span{
-        margin-right: 200px;
+    .borrow {
+      flex: 1;
+      text-align: center;
+      border-left: 1px solid #666666;
+      border-top: 1.5px solid #666666;
+      .borrow-top {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        border-bottom: 1px solid #666666;
+      }
+      .borrow-bottom {
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        div {
+          flex: 1;
+          border-right:1px solid #ccc;
+        }
+        div:last-child {
+          border-right: none;
+        }
+        div:nth-child(5),div:nth-child(8) {
+          border-right: #82cef1 1px solid !important;
+        }
+        div:nth-child(11) {
+          border-right: #f3a193 1px solid !important;
+        }
+      }
+    }
+    .loan {
+      flex: 1;
+      text-align: center;
+      border: 1px solid #666666;
+      border-top:1.5px solid #666666;
+      border-right:1.5px solid #666666;
+      border-bottom: none;
+      .loan-top {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #666666;
+        box-sizing: border-box;
+      }
+      .loan-bottom {
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        div {
+          flex: 1;
+          border-right:1px solid #ccc;
+        }
+        div:last-child {
+          border-right: none;
+        }
+        div:nth-child(5),div:nth-child(8) {
+          border-right: #82cef1 1px solid !important;
+        }
+        div:nth-child(11) {
+          border-right: #f3a193 1px solid !important;
+        }
       }
     }
   }
+  // 审核信息
+  .bottom{
+    margin-left: 40px;
+    margin-top: 20px;
+    span{
+      margin-right: 200px;
+    }
+  }
 }
+// 保存按钮
 .footer{
   margin: 15px 1px 0px 0;
   width: 1120px;
