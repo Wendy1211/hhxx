@@ -44,7 +44,7 @@
             <div>{{borrowCountArray[1] == undefined ? '' : borrowCountArray[1]}}</div>
             <div>{{borrowCountArray[0] == undefined ? '' : borrowCountArray[0]}}</div>
           </div>
-          <input type="text" ref="borrowgain" v-show="borrowInput" @input="borrowInputEvent" @blur="borrowBlurEvent">
+          <input type="text" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent">
         </div>
       </div>
       <div class="loan">
@@ -121,13 +121,27 @@ export default {
       },
       borrowInputEvent() {
         let borrowValue = this.$refs.borrowgain.value + '';
+        let hhh = '';
+         if (!(/^[0-9]+$/.test(borrowValue))) {
+           this.$message({
+             type: 'primary',
+             message: '必须全为数字！'
+           })
+           return
+         }
         if(borrowValue.indexOf('.') == -1) {
-          this.borrowCountArray = (borrowValue + '00').split('').reverse()
-          console.log(this.borrowCountArray)
-        } 
-        // else (borrowValue.indexOf('.') == 1){
-        //   this.borrowCountArray = borrowValue.split('.').join().split().reverse()
-        // }
+          hhh = (borrowValue + '00').split('').reverse()
+        } else{
+          if (borrowValue.split('.')[1].length == 2) {
+            hhh = borrowValue.split('.').join('').split('').reverse()
+          } else if (borrowValue.split('.')[1].length == 1) {
+            const middle = borrowValue + '0'
+            hhh = middle.split('.').join('').split('').reverse()
+          } else if (borrowValue.split('.')[1].length > 2) {
+
+            // borrowValue.split('.')[0] + .join('').split('').reverse()
+          }
+        }
       },
       borrowBlurEvent() {
         // this.$refs.borrowgain.value = null
