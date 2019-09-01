@@ -64,12 +64,13 @@
             <div>{{loanCountArray[1] == undefined ? '' : loanCountArray[1]}}</div>
             <div>{{loanCountArray[0] == undefined ? '' : loanCountArray[0]}}</div>
           </div>
-          <input type="text" ref="loangain" v-show="loanInput" @input="loanInputEvent" @blur="loanBlurEvent">
+          <input type="text" ref="loangain" v-show="loanInput" @change="loanInputEvent" @blur="loanBlurEvent">
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -97,17 +98,17 @@ export default {
       },
       loadAll() {
         return [
-          { "value": "提现" },
-          { "value": "提现" },
-          { "value": "提现" },
+          { "value": "提现1" },
+          { "value": "提现3" },
+          { "value": "提现4" },
+          { "value": "利息收入7" },
+          { "value": "利息收入6" },
           { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
+          { "value": "支付工资9" },
           { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-           ];
+          { "value": "支付工资80" },
+          { "value": "支付工资5" },
+        ];
       },
       handleSelect(item) {
         console.log(item);
@@ -165,10 +166,25 @@ export default {
       },
       loanInputEvent() {
         let loanValue = this.$refs.loangain.value + '';
+        let hhh = '';
+         if (!(/^\d+$|^\d*\.\d+$/g.test(loanValue))) {
+           this.$message({
+             type: 'primary',
+             message: '必须为数字！'
+           })
+           return
+         }
         if(loanValue.indexOf('.') == -1) {
-          this.loanCountArray = (loanValue + '00').split('').reverse()
-          console.log(this.loanCountArray)
+          hhh = (loanValue + '00').split('').reverse()
+        } else {
+           if (loanValue.split('.')[1].length == 2) {
+            hhh = loanValue.split('.').join('').split('').reverse()
+          } else if (loanValue.split('.')[1].length == 1) {
+            const middle = loanValue + '0'
+            hhh = middle.split('.').join('').split('').reverse()
+          }
         }
+        this.loanCountArray = hhh
       },
       loanBlurEvent() {
         // this.$refs.loangain.value = null
@@ -186,6 +202,7 @@ export default {
     }
 }
 </script>
+
 <style lang="less" scoped>
 // 带建议 输入框
 .el-autocomplete /deep/.el-input .el-input__inner{
@@ -227,6 +244,7 @@ export default {
       right: -30px;
       top: 40%;
       font-size: 20px;
+      color: red;
     }
   }
   .digest {
