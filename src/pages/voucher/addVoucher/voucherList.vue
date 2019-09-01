@@ -122,15 +122,18 @@ export default {
       borrowInputEvent() {
         let borrowValue = this.$refs.borrowgain.value + '';
         let hhh = '';
-         if (!(/^[0-9]+$/.test(borrowValue))) {
+        //  if (!(/^[0-9]+$/.test(borrowValue))) {
+         if (!(/^[+-]?\d+(\.\d+)?$/.test(borrowValue) || '')) {
            this.$message({
              type: 'primary',
-             message: '必须全为数字！'
+             message: '必须填入数字！'
            })
            return
          }
         if(borrowValue.indexOf('.') == -1) {
-          hhh = (borrowValue + '00').split('').reverse()
+          if(borrowValue.length) {
+            hhh = (borrowValue + '00').split('').reverse()
+          }
         } else{
           if (borrowValue.split('.')[1].length == 2) {
             hhh = borrowValue.split('.').join('').split('').reverse()
@@ -138,10 +141,16 @@ export default {
             const middle = borrowValue + '0'
             hhh = middle.split('.').join('').split('').reverse()
           } else if (borrowValue.split('.')[1].length > 2) {
-
-            // borrowValue.split('.')[0] + .join('').split('').reverse()
+            if((borrowValue.split('.')[1]+'').split('')[2] >=5) {
+              let longnum = '' + (borrowValue.split('.')[1]+'').split('')[0] + (Number((borrowValue.split('.')[1]+'').split('')[1]) + 1)
+              let longnummiddle = borrowValue.split('.')[0] + longnum
+              hhh = longnummiddle.split('').reverse()
+            } else {
+              hhh = (borrowValue.split('.')[0] + borrowValue.split('.')[1].slice(0,2) + '').split('').reverse()
+            }
           }
         }
+        this.borrowCountArray = hhh
       },
       borrowBlurEvent() {
         // this.$refs.borrowgain.value = null
