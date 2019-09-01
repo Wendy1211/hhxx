@@ -4,68 +4,70 @@
       <div class="add" @click="handleAdd">
         <i class="el-icon-circle-plus-outline"></i>
       </div>
+      <div class="item-box">
+          <div class="digest">
+            <!-- 带建议的下拉框 -->
+            <el-autocomplete
+            class="inline-input"
+            v-model="state1"
+            :fetch-suggestions="querySearch"
+            placeholder=""
+            :trigger-on-focus="false"
+            @select="handleSelect"
+            ></el-autocomplete>
+          </div>
+          <div class="subject">
+              <el-autocomplete
+              class="inline-input"
+              v-model="state2"
+              :fetch-suggestions="querySearch"
+              placeholder=""
+              @select="handleSelect"
+            ></el-autocomplete>
+          </div>
+          <div class="borrow">
+            <div class="borrow-bottom" @click="borrowClick">
+              <div class="div-box" v-show="!borrowInput">
+                <div>{{borrowCountArray[12] == undefined ? '' : borrowCountArray[12]}}</div>
+                <div>{{borrowCountArray[11] == undefined ? '' : borrowCountArray[11]}}</div>
+                <div>{{borrowCountArray[10] == undefined ? '' : borrowCountArray[10]}}</div>
+                <div>{{borrowCountArray[9] == undefined ? '' : borrowCountArray[9]}}</div>
+                <div>{{borrowCountArray[8] == undefined ? '' : borrowCountArray[8]}}</div>
+                <div>{{borrowCountArray[7] == undefined ? '' : borrowCountArray[7]}}</div>
+                <div>{{borrowCountArray[6] == undefined ? '' : borrowCountArray[6]}}</div>
+                <div>{{borrowCountArray[5] == undefined ? '' : borrowCountArray[5]}}</div>
+                <div>{{borrowCountArray[4] == undefined ? '' : borrowCountArray[4]}}</div>
+                <div>{{borrowCountArray[3] == undefined ? '' : borrowCountArray[3]}}</div>
+                <div>{{borrowCountArray[2] == undefined ? '' : borrowCountArray[2]}}</div>
+                <div>{{borrowCountArray[1] == undefined ? '' : borrowCountArray[1]}}</div>
+                <div>{{borrowCountArray[0] == undefined ? '' : borrowCountArray[0]}}</div>
+              </div>
+              <input type="text" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent">
+            </div>
+          </div>
+          <div class="loan">
+            <div class="loan-bottom" @click="loanClick">
+              <div class="div-box" v-show="!loanInput">
+                <div>{{loanCountArray[12] == undefined ? '' : loanCountArray[12]}}</div>
+                <div>{{loanCountArray[11] == undefined ? '' : loanCountArray[11]}}</div>
+                <div>{{loanCountArray[10] == undefined ? '' : loanCountArray[10]}}</div>
+                <div>{{loanCountArray[9] == undefined ? '' : loanCountArray[9]}}</div>
+                <div>{{loanCountArray[8] == undefined ? '' : loanCountArray[8]}}</div>
+                <div>{{loanCountArray[7] == undefined ? '' : loanCountArray[7]}}</div>
+                <div>{{loanCountArray[6] == undefined ? '' : loanCountArray[6]}}</div>
+                <div>{{loanCountArray[5] == undefined ? '' : loanCountArray[5]}}</div>
+                <div>{{loanCountArray[4] == undefined ? '' : loanCountArray[4]}}</div>
+                <div>{{loanCountArray[3] == undefined ? '' : loanCountArray[3]}}</div>
+                <div>{{loanCountArray[2] == undefined ? '' : loanCountArray[2]}}</div>
+                <div>{{loanCountArray[1] == undefined ? '' : loanCountArray[1]}}</div>
+                <div>{{loanCountArray[0] == undefined ? '' : loanCountArray[0]}}</div>
+              </div>
+              <input type="text" :disabled="borrowCountArray.length" ref="loangain" v-show="loanInput" @change="loanInputEvent" @blur="loanBlurEvent">
+            </div>
+          </div>
+      </div>
       <div class="delete" @click="handleDelete">
         <i class="el-icon-delete"></i>
-      </div>
-      <div class="digest">
-          <!-- 带建议的下拉框 -->
-          <el-autocomplete
-          class="inline-input"
-          v-model="state1"
-          :fetch-suggestions="querySearch"
-          placeholder=""
-          :trigger-on-focus="false"
-          @select="handleSelect"
-        ></el-autocomplete>
-      </div>
-      <div class="subject">
-          <el-autocomplete
-          class="inline-input"
-          v-model="state2"
-          :fetch-suggestions="querySearch"
-          placeholder=""
-          @select="handleSelect"
-        ></el-autocomplete>
-      </div>
-      <div class="borrow">
-        <div class="borrow-bottom" @click="borrowClick">
-          <div class="div-box" v-show="!borrowInput">
-            <div>{{borrowCountArray[12] == undefined ? '' : borrowCountArray[12]}}</div>
-            <div>{{borrowCountArray[11] == undefined ? '' : borrowCountArray[11]}}</div>
-            <div>{{borrowCountArray[10] == undefined ? '' : borrowCountArray[10]}}</div>
-            <div>{{borrowCountArray[9] == undefined ? '' : borrowCountArray[9]}}</div>
-            <div>{{borrowCountArray[8] == undefined ? '' : borrowCountArray[8]}}</div>
-            <div>{{borrowCountArray[7] == undefined ? '' : borrowCountArray[7]}}</div>
-            <div>{{borrowCountArray[6] == undefined ? '' : borrowCountArray[6]}}</div>
-            <div>{{borrowCountArray[5] == undefined ? '' : borrowCountArray[5]}}</div>
-            <div>{{borrowCountArray[4] == undefined ? '' : borrowCountArray[4]}}</div>
-            <div>{{borrowCountArray[3] == undefined ? '' : borrowCountArray[3]}}</div>
-            <div>{{borrowCountArray[2] == undefined ? '' : borrowCountArray[2]}}</div>
-            <div>{{borrowCountArray[1] == undefined ? '' : borrowCountArray[1]}}</div>
-            <div>{{borrowCountArray[0] == undefined ? '' : borrowCountArray[0]}}</div>
-          </div>
-          <input type="text" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent">
-        </div>
-      </div>
-      <div class="loan">
-        <div class="loan-bottom" @click="loanClick">
-          <div class="div-box" v-show="!loanInput">
-            <div>{{loanCountArray[12] == undefined ? '' : loanCountArray[12]}}</div>
-            <div>{{loanCountArray[11] == undefined ? '' : loanCountArray[11]}}</div>
-            <div>{{loanCountArray[10] == undefined ? '' : loanCountArray[10]}}</div>
-            <div>{{loanCountArray[9] == undefined ? '' : loanCountArray[9]}}</div>
-            <div>{{loanCountArray[8] == undefined ? '' : loanCountArray[8]}}</div>
-            <div>{{loanCountArray[7] == undefined ? '' : loanCountArray[7]}}</div>
-            <div>{{loanCountArray[6] == undefined ? '' : loanCountArray[6]}}</div>
-            <div>{{loanCountArray[5] == undefined ? '' : loanCountArray[5]}}</div>
-            <div>{{loanCountArray[4] == undefined ? '' : loanCountArray[4]}}</div>
-            <div>{{loanCountArray[3] == undefined ? '' : loanCountArray[3]}}</div>
-            <div>{{loanCountArray[2] == undefined ? '' : loanCountArray[2]}}</div>
-            <div>{{loanCountArray[1] == undefined ? '' : loanCountArray[1]}}</div>
-            <div>{{loanCountArray[0] == undefined ? '' : loanCountArray[0]}}</div>
-          </div>
-          <input type="text" ref="loangain" v-show="loanInput" @change="loanInputEvent" @blur="loanBlurEvent">
-        </div>
       </div>
     </div>
   </div>
@@ -134,6 +136,7 @@ export default {
         if(borrowValue.indexOf('.') == -1) {
           if(borrowValue.length) {
             hhh = (borrowValue + '00').split('').reverse()
+
           }
         } else{
           if (borrowValue.split('.')[1].length == 2) {
@@ -222,27 +225,40 @@ export default {
     display: block;
   }
 }
+.item-box{
+  width: 1020px;
+  margin:0 auto;
+  display: flex;
+}
 .content-item {
-  position: relative;
+  // position: relative;
   height: 60px;
   display: flex;
   // 加
   .add{
+    // width: 100px;
+    flex: 1;
     display: none;
+    text-align: center;
+    line-height: 60px;
+    // position: absolute;
+    // left: 0px;
+    // top: 40%;
     i{
-      position: absolute;
-      left: -30px;
-      top: 40%;
       font-size: 20px;
     }
   }
   // 删除
   .delete{
+    // width: 100px;
+    flex: 1;
     display: none;
+    text-align: center;
+    line-height: 60px;
     i{
-      position: absolute;
-      right: -30px;
-      top: 40%;
+      // position: absolute;
+      // right: -30px;
+      // top: 40%;
       font-size: 20px;
       color: red;
     }

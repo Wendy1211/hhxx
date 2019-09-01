@@ -69,10 +69,12 @@
           </div>
         </div>
         <!-- 一行 组件 -->
-        <voucherList></voucherList>
-        <voucherList></voucherList>
-        <voucherList></voucherList>
-        <voucherList></voucherList>
+        <div class="content-components">
+          <voucherList></voucherList>
+          <voucherList></voucherList>
+          <voucherList></voucherList>
+          <voucherList></voucherList>
+        </div>
         <!-- 合计 -->
         <div class="content-footer">
           <div class="total">&nbsp;&nbsp;&nbsp;合计：</div>
@@ -285,12 +287,18 @@ export default {
   }
   // 表
   .content {
-    width: 1020px;
+    width: 1110px;
     height: 560px;
     margin: 20px auto;
+    // text-align: center;
+    .content-components{
+      width: 1110px;
+    }
     .content-head,.content-footer{
+      width: 1020px;
       display: flex;
       height: 60px;
+      margin: 0 auto;
       .digest {
         flex: 1;
         text-align: center;
