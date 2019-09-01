@@ -121,10 +121,9 @@
       <el-button size="small">保存并新增(F12)</el-button>
       <el-button size="small">保存(Ctrl+S)</el-button>
     </div>
-    
 </div>
-    
 </template>
+
 <script>
 import voucherList from './voucherList'
 export default {
@@ -133,63 +132,24 @@ export default {
       voucherList
     },
     data() {
-        return {
-          value1: '',//日期
-          restaurants: [],
-          state1: '',
+      return {
+        value1: '',//日期
       }
     },
     methods:{
-      querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      loadAll() {
-        return [
-          { "value": "提现" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-           ];
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
       handleRight(){
         console.log('right')
       },
       handleLeft(){
         console.log('left')
-      }
-    },
-    mounted() {
-      this.restaurants = this.loadAll();
-    }
+      },
+  },
+  mounted() {
+  }
 }
 </script>
+
 <style lang="less" scoped>
-// 带建议 输入框
-.el-autocomplete .el-input .el-input__inner{
-    padding-left: 10px !important;
-    padding-right: 0px !important;
-    width: 253px !important;
-    height: 55px !important;
-    border: none !important;
-    box-sizing: border-box !important;
-}
 .body{
   width: 1220px;
   padding: 10px;
@@ -439,7 +399,7 @@ export default {
   text-align: right;
   .el-button{
     color: #fff;
-    background-color: #668CFF ;
+    background-color: #34A8FF ;
   }
 }
 </style>

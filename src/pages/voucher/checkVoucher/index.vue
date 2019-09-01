@@ -1,148 +1,103 @@
 <template>
-    <div class="checkVocher">
-        <template>
-            <el-table
-                ref="multipleTable"
-                :data="tableData"
-                tooltip-effect="dark"
-                style="width: 100%"
-                border
-                @selection-change="handleSelectionChange">
-                <el-table-column
-                type="selection"
-                width="55">
-                </el-table-column>
-                <el-table-column
-                label="日期"
-                width="120">
-                <template slot-scope="scope">{{ scope.row.date }}</template>
-                </el-table-column>
-                <el-table-column
-                prop="name"
-                label="姓名"
-                width="120">
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                label="地址"
-                show-overflow-tooltip>
-                </el-table-column>
-            </el-table>
-            <div style="margin-top: 20px">
-                <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
-                <el-button @click="toggleSelection()">取消选择</el-button>
-            </div>
-        </template>
+  <div class="checkVocher">
+    <!-- 表上信息 -->
+    <div class="title">
+      <!-- 日期 -->
+      <span style="padding-left:20px" class="date">
+        <el-date-picker
+          size="small"
+          v-model="value"
+          type="month"
+          placeholder="选择月">
+        </el-date-picker>
+      </span>
+      <!-- 复合搜索 -->
+      <span class="search">
+        <el-input placeholder="请输入搜索内容" v-model="input" size="small" class="input-with-select">
+          <el-select v-model="select" slot="prepend">
+            <el-option label="综合搜索" value="1"></el-option>
+            <el-option label="科目" value="2"></el-option>
+            <el-option label="摘要" value="3"></el-option>
+            <el-option label="金额" value="4"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search" size="small"></el-button>
+        </el-input>
+      </span>
+      <!-- 按钮 -->
+      <span class="btn">
+        <el-button size="small">刷新</el-button>
+        <el-button size="small">新增</el-button>
+        <el-button size="small">删除</el-button>
+        <el-button size="small">打印</el-button>
+        <el-select v-model="select1" placeholder="更多" size="small">
+          <el-option label="审核" value="1"></el-option>
+          <el-option label="反审核" value="2"></el-option>
+        </el-select>
+      </span>
     </div>
+    <!-- 凭证表 -->
+    <div class="list">
+      <table
+        style="width: 100%">
+        <tableList></tableList>
+        <tableList></tableList>
+        <tableList></tableList>
+      </table>
+    </div>
+  </div>
 </template>
 <script>
+import tableList from './tableList'
 export default {
-    name:'CheckVoucher',
-    data() {
-      return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333
-        },{
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333
-        },{
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1517 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1519 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1516 弄',
-          zip: 200333
-        }]  
-      }
-    },
-    methods: {
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      }
+  name:'CheckVoucher',
+  components:{
+    tableList
+  },
+  data() {
+    return {
+      value: '',
+      input:'',
+      select:'',
+      select1:''
     }
+  },
 }
 </script>
 <style lang="less" scoped>
+.title{
+  .date{
+    /deep/.el-input,.el-input__inner{
+      width: 130px;
+    }
+  }
+  .search{
+    display: inline-block;
+    margin-left: 40px;
+    .el-input{
+      width: 530px;
+    }
+    /deep/.el-select  {
+      width: 100px;
+    }
+    .input-with-select .el-input-group__prepend {
+      background-color: #fff;
+    }
+  }
+  .btn{
+    margin-left: 170px;
+    .el-button{
+      color: #fff;
+      background-color: #34A8FF;
+    }
+    /deep/.el-select{
+      margin-left: 10px;
+      width: 100px;
+    }
+  }
+}
+
+
+
+
 
 </style>
