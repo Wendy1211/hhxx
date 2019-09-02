@@ -44,6 +44,7 @@
             </div>
             <!-- <input type="text" :disabled="Boolean(loanCountArray.length)" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent"> -->
             <input
+              class="red"
               type="text"
               v-model="borrowValue"
               ref="borrowgain"
@@ -150,7 +151,7 @@ export default {
     borrowBlurEvent() {
       let hhh = "";
       if (
-        !/^[+-]?\d+(\.\d+)?$/.test(this.borrowValue) &&
+        !/^[-]?\d+(\.\d+)?$/.test(this.borrowValue) &&
         this.borrowValue != ""
       ) {
         this.$message({
@@ -213,7 +214,7 @@ export default {
     loanBlurEvent() {
       let hhh = "";
       if (
-        !/^[+-]?\d+(\.\d+)?$/.test(this.loanValue) &&
+        !/^[-]?\d+(\.\d+)?$/.test(this.loanValue) &&
         this.loanValue != ""
       ) {
         this.$message({
@@ -368,6 +369,9 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      .red{
+        color: red;
+      }
       .div-box {
         flex: 1;
         display: flex;

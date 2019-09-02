@@ -11,8 +11,10 @@
       <div class="title">记账凭证</div>
       <!-- 表头上 信息 -->
       <div class="title-item">
-        <span >记-
-          <input class="title-one">号
+        <span class="pzh">记-
+          <input class="title-one" v-model="pzhinput">号
+          <i class="el-icon-caret-top" @click="pzhCount(1)"></i>
+          <i class="el-icon-caret-bottom" @click="pzhCount(-1)"></i>
         </span>
         <span class="title-a">日期：
             <el-date-picker
@@ -23,7 +25,7 @@
             </el-date-picker>
         </span>
         <span class="title-b">2019年第5期</span>
-        <span class="title-c">附单据<input class="title-four">张</span>
+        <span class="title-c">附单据<input class="title-four" placeholder="0">张</span>
       </div>
       <!-- 表内容 -->
       <div class="content">
@@ -157,7 +159,8 @@ export default {
         borrowAll: '',
         loanAll: '',
         borrowAllArray: [],
-        loanAllArray: []
+        loanAllArray: [],
+        pzhinput:3
       }
     },
     methods:{
@@ -198,6 +201,9 @@ export default {
       handleComponentsValue(val) {
         this.list[val.index].borrow = val.borrow
         this.list[val.index].loan = val.loan
+      },
+      pzhCount(num){
+        this.pzhinput+=num
       }
     },
     mounted() {
@@ -278,14 +284,20 @@ export default {
     margin-top: 10px;
     .title-a{
       margin-left: 60px;
-      
+      /deep/.el-input{
+        .el-input__inner{
+          height: 28px !important;
+          padding-right: 0px !important;
+        }
+        .el-input__icon{
+          line-height: 26px;
+        }
+      }
       .el-date-editor{
         width: 140px;
+        height: 24px;
       }
-      .el-input__inner{
-        padding-right: 0px;
-
-      }
+      
     }
     .title-b{
       margin-left: 120px;
@@ -293,18 +305,37 @@ export default {
     .title-c{
       margin-left: 340px;
     }
+    .pzh{
+      position: relative;
+      .el-icon-caret-top{
+        position: absolute;
+        right: 23px;
+        top: -3px;
+        color: #999;
+      }
+      .el-icon-caret-bottom{
+        position: absolute;
+        right: 23px;
+        bottom: -5px;
+        color: #999;
+      }
+    }
     .title-one{
       width: 40px;
-      height: 28px;
+      height: 24px;
       margin: 0 4px;
-      padding-left: 10px;
+      border: 1px solid #ccc;
+      padding-left: 5px;
       box-sizing: border-box;
+      border-radius: 5px;
     }
     .title-four{
       width: 32px;
-      height: 28px;
+      height: 24px;
       margin: 0 4px;
       padding-left: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       box-sizing: border-box;
     }
   }
@@ -456,7 +487,7 @@ export default {
   }
   // 审核信息
   .bottom{
-    margin-left: 40px;
+    margin-left: 50px;
     margin-top: 20px;
     span{
       margin-right: 200px;

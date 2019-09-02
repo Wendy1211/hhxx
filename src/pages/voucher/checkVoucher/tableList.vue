@@ -2,6 +2,7 @@
     <div class="tableList">
         <el-table
             :data="tableData"
+            :span-method="objectSpanMethod" 
             border
             ref="multipleTable"
             tooltip-effect="dark"
@@ -58,6 +59,22 @@ export default {
         }
     },
     methods:{
+        // 合并行
+        objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+        if (columnIndex === 0) {
+          if (rowIndex=== 0) {
+            return {
+              rowspan: 3,
+              colspan: 1
+            };
+          } else {
+            return {
+              rowspan: 0,
+              colspan: 0
+            };
+          }
+        }
+      },
         getSummaries(param) {
             const { columns, data } = param;
             const sums = [];

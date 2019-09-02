@@ -65,6 +65,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .title{
+  margin-top: 10px;
   .date{
     /deep/.el-input,.el-input__inner{
       width: 130px;
