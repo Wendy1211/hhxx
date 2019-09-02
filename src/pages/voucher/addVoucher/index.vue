@@ -70,43 +70,40 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList></voucherList>
-          <voucherList></voucherList>
-          <voucherList></voucherList>
-          <voucherList></voucherList>
+          <voucherList v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue'></voucherList>
         </div>
         <!-- 合计 -->
         <div class="content-footer">
           <div class="total">&nbsp;&nbsp;&nbsp;合计：</div>
           <div class="total-borrow">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div>{{borrowAllArray[12] == undefined ? '' : borrowAllArray[12]}}</div>
+              <div>{{borrowAllArray[11] == undefined ? '' : borrowAllArray[11]}}</div>
+              <div>{{borrowAllArray[10] == undefined ? '' : borrowAllArray[10]}}</div>
+              <div>{{borrowAllArray[9] == undefined ? '' : borrowAllArray[9]}}</div>
+              <div>{{borrowAllArray[8] == undefined ? '' : borrowAllArray[8]}}</div>
+              <div>{{borrowAllArray[7] == undefined ? '' : borrowAllArray[7]}}</div>
+              <div>{{borrowAllArray[6] == undefined ? '' : borrowAllArray[6]}}</div>
+              <div>{{borrowAllArray[5] == undefined ? '' : borrowAllArray[5]}}</div>
+              <div>{{borrowAllArray[4] == undefined ? '' : borrowAllArray[4]}}</div>
+              <div>{{borrowAllArray[3] == undefined ? '' : borrowAllArray[3]}}</div>
+              <div>{{borrowAllArray[2] == undefined ? '' : borrowAllArray[2]}}</div>
+              <div>{{borrowAllArray[1] == undefined ? '' : borrowAllArray[1]}}</div>
+              <div>{{borrowAllArray[0] == undefined ? '' : borrowAllArray[0]}}</div>
           </div>
           <div class="total-loan">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div>{{loanAllArray[12] == undefined ? '' : loanAllArray[12]}}</div>
+              <div>{{loanAllArray[11] == undefined ? '' : loanAllArray[11]}}</div>
+              <div>{{loanAllArray[10] == undefined ? '' : loanAllArray[10]}}</div>
+              <div>{{loanAllArray[9] == undefined ? '' : loanAllArray[9]}}</div>
+              <div>{{loanAllArray[8] == undefined ? '' : loanAllArray[8]}}</div>
+              <div>{{loanAllArray[7] == undefined ? '' : loanAllArray[7]}}</div>
+              <div>{{loanAllArray[6] == undefined ? '' : loanAllArray[6]}}</div>
+              <div>{{loanAllArray[5] == undefined ? '' : loanAllArray[5]}}</div>
+              <div>{{loanAllArray[4] == undefined ? '' : loanAllArray[4]}}</div>
+              <div>{{loanAllArray[3] == undefined ? '' : loanAllArray[3]}}</div>
+              <div>{{loanAllArray[2] == undefined ? '' : loanAllArray[2]}}</div>
+              <div>{{loanAllArray[1] == undefined ? '' : loanAllArray[1]}}</div>
+              <div>{{loanAllArray[0] == undefined ? '' : loanAllArray[0]}}</div>
           </div>
         </div>
         <!-- 审核信息 -->
@@ -134,11 +131,33 @@ export default {
     components:{
       voucherList
     },
+    created() {
+      this.list.forEach(item => {
+        item.borrow = ''
+        item.loan = ''
+      })
+    },
+    mounted() {
+      let borrowmiddle = 0;
+      let loanmiddle = 0;
+      this.list.forEach(item => {
+        borrowmiddle += Number(item.borrow)
+        loanmiddle += Number(item.loan)
+      })
+      this.borrowAllArray = (borrowmiddle + '').split('').reverse()
+      this.loanAllArray = (loanmiddle + '').split('').reverse()
+      console.log(111)
+    },
     data() {
-        return {
-          value1: '',//日期
-          restaurants: [],
-          state1: '',
+      return {
+        value1: '',//日期
+        restaurants: [],
+        state1: '',
+        list: [{},{},{},{}],
+        borrowAll: '',
+        loanAll: '',
+        borrowAllArray: [],
+        loanAllArray: []
       }
     },
     methods:{
@@ -175,6 +194,10 @@ export default {
       },
       handleLeft(){
         console.log('left')
+      },
+      handleComponentsValue(val) {
+        this.list[val.index].borrow = val.borrow
+        this.list[val.index].loan = val.loan
       }
     },
     mounted() {
