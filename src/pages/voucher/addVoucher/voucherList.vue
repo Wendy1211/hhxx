@@ -27,7 +27,7 @@
         </div>
         <div class="borrow">
           <div class="borrow-bottom" @click="borrowClick">
-            <div class="div-box" v-show="!borrowInput">
+            <div class="div-box" v-show="!borrowInput" :class="borrowValue < 0 ? 'red' : ''">
               <div>{{borrowCountArray[12] == undefined ? '' : borrowCountArray[12]}}</div>
               <div>{{borrowCountArray[11] == undefined ? '' : borrowCountArray[11]}}</div>
               <div>{{borrowCountArray[10] == undefined ? '' : borrowCountArray[10]}}</div>
@@ -44,7 +44,6 @@
             </div>
             <!-- <input type="text" :disabled="Boolean(loanCountArray.length)" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent"> -->
             <input
-              class="red"
               type="text"
               v-model="borrowValue"
               ref="borrowgain"
@@ -99,12 +98,14 @@ export default {
       borrowInput: false,
       loanInput: false,
       borrowValue: "",
+      borrowValuePositive: "",
       loanValue: "",
+      loanValuePositive: "",
       restaurants: [],
       state1: "",
       state2: "",
       borrowCountArray: [],
-      loanCountArray: []
+      loanCountArray: [],
     };
   },
   methods: {
@@ -150,6 +151,11 @@ export default {
     },
     borrowBlurEvent() {
       let hhh = "";
+      if(this.borrowValue.indexOf('-') != -1) {
+        this.borrowValuePositive = this.borrowValue.split('-')[1]
+      } else {
+        this.borrowValuePositive = this.borrowValue
+      }
       if (
         !/^[-]?\d+(\.\d+)?$/.test(this.borrowValue) &&
         this.borrowValue != ""
@@ -162,17 +168,17 @@ export default {
       }
       if (this.borrowValue.indexOf(".") == -1) {
         if (this.borrowValue.length) {
-          hhh = (this.borrowValue + "00").split("").reverse();
+          hhh = (this.borrowValuePositive + "00").split("").reverse();
         }
       } else {
         if (this.borrowValue.split(".")[1].length == 2) {
-          hhh = this.borrowValue
+          hhh = this.borrowValuePositive
             .split(".")
             .join("")
             .split("")
             .reverse();
         } else if (this.borrowValue.split(".")[1].length == 1) {
-          const middle = this.borrowValue + "0";
+          const middle = this.borrowValuePositive + "0";
           hhh = middle
             .split(".")
             .join("")
@@ -184,11 +190,11 @@ export default {
               "" +
               (this.borrowValue.split(".")[1] + "").split("")[0] +
               (Number((this.borrowValue.split(".")[1] + "").split("")[1]) + 1);
-            let longnummiddle = this.borrowValue.split(".")[0] + longnum;
+            let longnummiddle = this.borrowValuePositive.split(".")[0] + longnum;
             hhh = longnummiddle.split("").reverse();
           } else {
             hhh = (
-              this.borrowValue.split(".")[0] +
+              this.borrowValuePositive.split(".")[0] +
               this.borrowValue.split(".")[1].slice(0, 2) +
               ""
             )
