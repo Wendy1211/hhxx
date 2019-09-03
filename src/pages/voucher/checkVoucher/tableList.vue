@@ -4,6 +4,7 @@
             :data="tableData"
             :span-method="objectSpanMethod" 
             border
+            :header-cell-style="getRowClass"
             ref="multipleTable"
             tooltip-effect="dark"
             show-summary
@@ -59,6 +60,14 @@ export default {
         }
     },
     methods:{
+      // 表头颜色
+        getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex === 0) {
+            return "background: #F2F2F2;";
+          } else {
+            return "";
+          }
+        },
         // 合并行
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
         if (columnIndex === 0) {

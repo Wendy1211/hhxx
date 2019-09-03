@@ -12,15 +12,13 @@
       <!-- 表头上 信息 -->
       <div class="title-item">
         <span class="pzh">记-
-          <input class="title-one" v-model="pzhinput">号
-          <i class="el-icon-caret-top" @click="pzhCount(1)"></i>
-          <i class="el-icon-caret-bottom" @click="pzhCount(-1)"></i>
+          <el-input-number size="mini" v-model="num" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+          号
         </span>
         <span class="title-a">日期：
             <el-date-picker
               v-model="value1"
               type="date"
-              suffix-icon="el-icon-date"
               placeholder="选择日期">
             </el-date-picker>
         </span>
@@ -119,8 +117,8 @@
     </el-card>
     <!-- 保存按钮 -->
     <div class="footer">
-      <el-button size="small">保存并新增(F12)</el-button>
-      <el-button size="small">保存(Ctrl+S)</el-button>
+      <el-button size="small" @click="saveNew">保存并新增(F12)</el-button>
+      <el-button size="small" @click="saveS">保存(Ctrl+S)</el-button>
     </div>
     
 </div>
@@ -160,7 +158,7 @@ export default {
         loanAll: '',
         borrowAllArray: [],
         loanAllArray: [],
-        pzhinput:3
+        num:1
       }
     },
     methods:{
@@ -189,9 +187,7 @@ export default {
           { "value": "支付工资" },
            ];
       },
-      handleSelect(item) {
-        console.log(item);
-      },
+      // 左右按钮
       handleRight(){
         console.log('right')
       },
@@ -202,8 +198,16 @@ export default {
         this.list[val.index].borrow = val.borrow
         this.list[val.index].loan = val.loan
       },
-      pzhCount(num){
-        this.pzhinput+=num
+      // 凭证号
+      handleChange(value) {
+        console.log(value);
+      },
+      // 保存并新增
+      saveNew(){
+        console.log(111)
+      },
+      saveS(){
+        console.log(222222)
       }
     },
     mounted() {
@@ -283,51 +287,31 @@ export default {
     line-height: 28px;
     margin-top: 10px;
     .title-a{
-      margin-left: 60px;
+      margin-left: 40px;
       /deep/.el-input{
         .el-input__inner{
           height: 28px !important;
           padding-right: 0px !important;
         }
         .el-input__icon{
-          line-height: 26px;
+          line-height: 28px;
         }
       }
       .el-date-editor{
-        width: 140px;
-        height: 24px;
+        width: 130px;
+        height: 28px;
       }
-      
     }
     .title-b{
-      margin-left: 120px;
+      margin-left: 100px;
     }
     .title-c{
-      margin-left: 340px;
+      margin-left: 320px;
     }
     .pzh{
-      position: relative;
-      .el-icon-caret-top{
-        position: absolute;
-        right: 23px;
-        top: -3px;
-        color: #999;
+      /deep/.el-input-number{
+        width: 90px;
       }
-      .el-icon-caret-bottom{
-        position: absolute;
-        right: 23px;
-        bottom: -5px;
-        color: #999;
-      }
-    }
-    .title-one{
-      width: 40px;
-      height: 24px;
-      margin: 0 4px;
-      border: 1px solid #ccc;
-      padding-left: 5px;
-      box-sizing: border-box;
-      border-radius: 5px;
     }
     .title-four{
       width: 32px;

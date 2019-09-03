@@ -10,8 +10,8 @@
           <el-autocomplete
             class="inline-input"
             v-model="state1"
+            @focus="handleFocus"
             :fetch-suggestions="querySearch"
-            placeholder
             :trigger-on-focus="false"
             @select="handleSelect"
           ></el-autocomplete>
@@ -22,7 +22,7 @@
             v-model="state2"
             :fetch-suggestions="querySearch"
             placeholder
-            @select="handleSelect"
+            @select="handleSelect1"
           ></el-autocomplete>
         </div>
         <div class="borrow">
@@ -44,7 +44,6 @@
             </div>
             <!-- <input type="text" :disabled="Boolean(loanCountArray.length)" ref="borrowgain" v-show="borrowInput" @change="borrowInputEvent" @blur="borrowBlurEvent"> -->
             <input
-              class="red"
               type="text"
               v-model="borrowValue"
               ref="borrowgain"
@@ -138,8 +137,22 @@ export default {
         { value: "支付工资5" }
       ];
     },
+    // 科目下拉选择
+    handleSelect1(item) {
+      console.log(item);
+    },
+    // 摘要下拉选择
     handleSelect(item) {
       console.log(item);
+      this.$bus.$emit('digest',item)
+    },
+    // 摘要 默认第一行摘要
+    handleFocus(item){
+      this.$bus.$on('digest',(res=>{
+        if(res){
+          this.state1=res.value
+        }
+      }));
     },
     // 借方
     borrowClick() {
@@ -369,9 +382,6 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      .red{
-        color: red;
-      }
       .div-box {
         flex: 1;
         display: flex;
