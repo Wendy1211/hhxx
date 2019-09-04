@@ -12,15 +12,13 @@
       <!-- 表头上 信息 -->
       <div class="title-item">
         <span class="pzh">记-
-          <input class="title-one" v-model="pzhinput">号
-          <i class="el-icon-caret-top" @click="pzhCount(1)"></i>
-          <i class="el-icon-caret-bottom" @click="pzhCount(-1)"></i>
+          <el-input-number size="mini" v-model="num" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+          号
         </span>
         <span class="title-a">日期：
             <el-date-picker
               v-model="value1"
               type="date"
-              suffix-icon="el-icon-date"
               placeholder="选择日期">
             </el-date-picker>
         </span>
@@ -76,36 +74,40 @@
         </div>
         <!-- 合计 -->
         <div class="content-footer">
-          <div class="total">&nbsp;&nbsp;&nbsp;合计：</div>
-          <div class="total-borrow">
-            <div>{{borrowAllArray[12] == undefined ? '' : borrowAllArray[12]}}</div>
-              <div>{{borrowAllArray[11] == undefined ? '' : borrowAllArray[11]}}</div>
-              <div>{{borrowAllArray[10] == undefined ? '' : borrowAllArray[10]}}</div>
-              <div>{{borrowAllArray[9] == undefined ? '' : borrowAllArray[9]}}</div>
-              <div>{{borrowAllArray[8] == undefined ? '' : borrowAllArray[8]}}</div>
-              <div>{{borrowAllArray[7] == undefined ? '' : borrowAllArray[7]}}</div>
-              <div>{{borrowAllArray[6] == undefined ? '' : borrowAllArray[6]}}</div>
-              <div>{{borrowAllArray[5] == undefined ? '' : borrowAllArray[5]}}</div>
-              <div>{{borrowAllArray[4] == undefined ? '' : borrowAllArray[4]}}</div>
-              <div>{{borrowAllArray[3] == undefined ? '' : borrowAllArray[3]}}</div>
-              <div>{{borrowAllArray[2] == undefined ? '' : borrowAllArray[2]}}</div>
-              <div>{{borrowAllArray[1] == undefined ? '' : borrowAllArray[1]}}</div>
-              <div>{{borrowAllArray[0] == undefined ? '' : borrowAllArray[0]}}</div>
+          <div class="total">&nbsp;&nbsp;&nbsp;合计：
+            <span v-if="borrowCount == loanCount">
+              <span v-for="(item,index) in dxsz" :key="index">{{zfall.item}}</span>
+            </span>
           </div>
-          <div class="total-loan">
+          <div class="total-borrow" :class="borrowCount < 0 ? 'redbox' : ''">
+            <div>{{borrowAllArray[12] == undefined ? '' : borrowAllArray[12]}}</div>
+            <div>{{borrowAllArray[11] == undefined ? '' : borrowAllArray[11]}}</div>
+            <div>{{borrowAllArray[10] == undefined ? '' : borrowAllArray[10]}}</div>
+            <div>{{borrowAllArray[9] == undefined ? '' : borrowAllArray[9]}}</div>
+            <div>{{borrowAllArray[8] == undefined ? '' : borrowAllArray[8]}}</div>
+            <div>{{borrowAllArray[7] == undefined ? '' : borrowAllArray[7]}}</div>
+            <div>{{borrowAllArray[6] == undefined ? '' : borrowAllArray[6]}}</div>
+            <div>{{borrowAllArray[5] == undefined ? '' : borrowAllArray[5]}}</div>
+            <div>{{borrowAllArray[4] == undefined ? '' : borrowAllArray[4]}}</div>
+            <div>{{borrowAllArray[3] == undefined ? '' : borrowAllArray[3]}}</div>
+            <div>{{borrowAllArray[2] == undefined ? '' : borrowAllArray[2]}}</div>
+            <div>{{borrowAllArray[1] == undefined ? '' : borrowAllArray[1]}}</div>
+            <div>{{borrowAllArray[0] == undefined ? '' : borrowAllArray[0]}}</div>
+          </div>
+          <div class="total-loan" :class="loanCount < 0 ? 'redbox' : ''">
             <div>{{loanAllArray[12] == undefined ? '' : loanAllArray[12]}}</div>
-              <div>{{loanAllArray[11] == undefined ? '' : loanAllArray[11]}}</div>
-              <div>{{loanAllArray[10] == undefined ? '' : loanAllArray[10]}}</div>
-              <div>{{loanAllArray[9] == undefined ? '' : loanAllArray[9]}}</div>
-              <div>{{loanAllArray[8] == undefined ? '' : loanAllArray[8]}}</div>
-              <div>{{loanAllArray[7] == undefined ? '' : loanAllArray[7]}}</div>
-              <div>{{loanAllArray[6] == undefined ? '' : loanAllArray[6]}}</div>
-              <div>{{loanAllArray[5] == undefined ? '' : loanAllArray[5]}}</div>
-              <div>{{loanAllArray[4] == undefined ? '' : loanAllArray[4]}}</div>
-              <div>{{loanAllArray[3] == undefined ? '' : loanAllArray[3]}}</div>
-              <div>{{loanAllArray[2] == undefined ? '' : loanAllArray[2]}}</div>
-              <div>{{loanAllArray[1] == undefined ? '' : loanAllArray[1]}}</div>
-              <div>{{loanAllArray[0] == undefined ? '' : loanAllArray[0]}}</div>
+            <div>{{loanAllArray[11] == undefined ? '' : loanAllArray[11]}}</div>
+            <div>{{loanAllArray[10] == undefined ? '' : loanAllArray[10]}}</div>
+            <div>{{loanAllArray[9] == undefined ? '' : loanAllArray[9]}}</div>
+            <div>{{loanAllArray[8] == undefined ? '' : loanAllArray[8]}}</div>
+            <div>{{loanAllArray[7] == undefined ? '' : loanAllArray[7]}}</div>
+            <div>{{loanAllArray[6] == undefined ? '' : loanAllArray[6]}}</div>
+            <div>{{loanAllArray[5] == undefined ? '' : loanAllArray[5]}}</div>
+            <div>{{loanAllArray[4] == undefined ? '' : loanAllArray[4]}}</div>
+            <div>{{loanAllArray[3] == undefined ? '' : loanAllArray[3]}}</div>
+            <div>{{loanAllArray[2] == undefined ? '' : loanAllArray[2]}}</div>
+            <div>{{loanAllArray[1] == undefined ? '' : loanAllArray[1]}}</div>
+            <div>{{loanAllArray[0] == undefined ? '' : loanAllArray[0]}}</div>
           </div>
         </div>
         <!-- 审核信息 -->
@@ -119,8 +121,8 @@
     </el-card>
     <!-- 保存按钮 -->
     <div class="footer">
-      <el-button size="small">保存并新增(F12)</el-button>
-      <el-button size="small">保存(Ctrl+S)</el-button>
+      <el-button size="small" @click="saveNew">保存并新增(F12)</el-button>
+      <el-button size="small" @click="saveS">保存(Ctrl+S)</el-button>
     </div>
     
 </div>
@@ -139,17 +141,17 @@ export default {
         item.loan = ''
       })
     },
-    mounted() {
-      let borrowmiddle = 0;
-      let loanmiddle = 0;
-      this.list.forEach(item => {
-        borrowmiddle += Number(item.borrow)
-        loanmiddle += Number(item.loan)
-      })
-      this.borrowAllArray = (borrowmiddle + '').split('').reverse()
-      this.loanAllArray = (loanmiddle + '').split('').reverse()
-      console.log(111)
-    },
+    // mounted() {
+    //   let borrowmiddle = 0;
+    //   let loanmiddle = 0;
+    //   this.list.forEach(item => {
+    //     borrowmiddle += Number(item.borrow)
+    //     loanmiddle += Number(item.loan)
+    //   })
+    //   this.borrowAllArray = (borrowmiddle + '').split('').reverse()
+    //   this.loanAllArray = (loanmiddle + '').split('').reverse()
+    //   console.log(111)
+    // },
     data() {
       return {
         value1: '',//日期
@@ -160,7 +162,29 @@ export default {
         loanAll: '',
         borrowAllArray: [],
         loanAllArray: [],
-        pzhinput:3
+        num:1,
+        borrowCount: 0,
+        loanCount: 0,
+        dxsz: [],
+        zfall: {
+          '-': "负",
+          '0': "零",
+          '1': "一",
+          '2': "二",
+          '3': "三",
+          '4': "四",
+          '5': "五",
+          '6': "六",
+          '7': "七",
+          '8': "八",
+          '9': "九"
+        }
+      }
+    },
+    watch: {
+      borrowCount() {
+        this.dxsz = (this.borrowCount + '').split('')
+        // this.dxsz = this.borrowCount
       }
     },
     methods:{
@@ -189,9 +213,7 @@ export default {
           { "value": "支付工资" },
            ];
       },
-      handleSelect(item) {
-        console.log(item);
-      },
+      // 左右按钮
       handleRight(){
         console.log('right')
       },
@@ -201,9 +223,41 @@ export default {
       handleComponentsValue(val) {
         this.list[val.index].borrow = val.borrow
         this.list[val.index].loan = val.loan
+        let borrowmiddle = 0
+        let loanmiddle = 0
+        this.list.forEach(item => {
+          borrowmiddle += Number(item.borrow)
+          loanmiddle += Number(item.loan)
+        })
+        this.borrowCount = borrowmiddle
+        this.loanCount = loanmiddle
+        if(borrowmiddle == 0) {
+          this.borrowAllArray = []
+        } else if(borrowmiddle < 0)
+        {
+          this.borrowAllArray = (borrowmiddle + '00').split('-')[1].split('').reverse()
+        } else {
+          this.borrowAllArray = (borrowmiddle + '00').split('').reverse()
+        }
+        if(loanmiddle == 0) {
+          this.loanAllArray = []
+        } else if(loanmiddle < 0)
+        {
+          this.loanAllArray = (loanmiddle + '00').split('-')[1].split('').reverse()
+        } else {
+          this.loanAllArray = (loanmiddle + '00').split('').reverse()
+        }
       },
-      pzhCount(num){
-        this.pzhinput+=num
+      // 凭证号
+      handleChange(value) {
+        console.log(value);
+      },
+      // 保存并新增
+      saveNew(){
+        console.log(111)
+      },
+      saveS(){
+        console.log(222222)
       }
     },
     mounted() {
@@ -283,51 +337,31 @@ export default {
     line-height: 28px;
     margin-top: 10px;
     .title-a{
-      margin-left: 60px;
+      margin-left: 40px;
       /deep/.el-input{
         .el-input__inner{
           height: 28px !important;
           padding-right: 0px !important;
         }
         .el-input__icon{
-          line-height: 26px;
+          line-height: 28px;
         }
       }
       .el-date-editor{
-        width: 140px;
-        height: 24px;
+        width: 130px;
+        height: 28px;
       }
-      
     }
     .title-b{
-      margin-left: 120px;
+      margin-left: 100px;
     }
     .title-c{
-      margin-left: 340px;
+      margin-left: 320px;
     }
     .pzh{
-      position: relative;
-      .el-icon-caret-top{
-        position: absolute;
-        right: 23px;
-        top: -3px;
-        color: #999;
+      /deep/.el-input-number{
+        width: 90px;
       }
-      .el-icon-caret-bottom{
-        position: absolute;
-        right: 23px;
-        bottom: -5px;
-        color: #999;
-      }
-    }
-    .title-one{
-      width: 40px;
-      height: 24px;
-      margin: 0 4px;
-      border: 1px solid #ccc;
-      padding-left: 5px;
-      box-sizing: border-box;
-      border-radius: 5px;
     }
     .title-four{
       width: 32px;
@@ -503,5 +537,8 @@ export default {
     color: #fff;
     background-color: #668CFF ;
   }
+}
+.redbox {
+  color: red
 }
 </style>

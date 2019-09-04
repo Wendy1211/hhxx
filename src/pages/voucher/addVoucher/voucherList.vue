@@ -10,8 +10,8 @@
           <el-autocomplete
             class="inline-input"
             v-model="state1"
+            @focus="handleFocus"
             :fetch-suggestions="querySearch"
-            placeholder
             :trigger-on-focus="false"
             @select="handleSelect"
           ></el-autocomplete>
@@ -22,7 +22,7 @@
             v-model="state2"
             :fetch-suggestions="querySearch"
             placeholder
-            @select="handleSelect"
+            @select="handleSelect1"
           ></el-autocomplete>
         </div>
         <div class="borrow">
@@ -54,7 +54,7 @@
         </div>
         <div class="loan">
           <div class="loan-bottom" @click="loanClick">
-            <div class="div-box" v-show="!loanInput">
+            <div class="div-box" v-show="!loanInput" :class="loanValue < 0 ? 'red' : ''">
               <div>{{loanCountArray[12] == undefined ? '' : loanCountArray[12]}}</div>
               <div>{{loanCountArray[11] == undefined ? '' : loanCountArray[11]}}</div>
               <div>{{loanCountArray[10] == undefined ? '' : loanCountArray[10]}}</div>
@@ -139,8 +139,22 @@ export default {
         { value: "支付工资5" }
       ];
     },
+    // 科目下拉选择
+    handleSelect1(item) {
+      console.log(item);
+    },
+    // 摘要下拉选择
     handleSelect(item) {
       console.log(item);
+      this.$bus.$emit('digest',item)
+    },
+    // 摘要 默认第一行摘要
+    handleFocus(item){
+      this.$bus.$on('digest',(res=>{
+        if(res){
+          this.state1=res.value
+        }
+      }));
     },
     // 借方
     borrowClick() {
@@ -219,6 +233,11 @@ export default {
     },
     loanBlurEvent() {
       let hhh = "";
+      if(this.loanValue.indexOf('-') != -1) {
+        this.loanValuePositive = this.loanValue.split('-')[1]
+      } else {
+        this.loanValuePositive = this.loanValue
+      }
       if (
         !/^[-]?\d+(\.\d+)?$/.test(this.loanValue) &&
         this.loanValue != ""
@@ -231,17 +250,17 @@ export default {
       }
       if (this.loanValue.indexOf(".") == -1) {
         if (this.loanValue.length) {
-          hhh = (this.loanValue + "00").split("").reverse();
+          hhh = (this.loanValuePositive + "00").split("").reverse();
         }
       } else {
         if (this.loanValue.split(".")[1].length == 2) {
-          hhh = this.loanValue
+          hhh = this.loanValuePositive
             .split(".")
             .join("")
             .split("")
             .reverse();
         } else if (this.loanValue.split(".")[1].length == 1) {
-          const middle = this.loanValue + "0";
+          const middle = this.loanValuePositive + "0";
           hhh = middle
             .split(".")
             .join("")
@@ -253,11 +272,11 @@ export default {
               "" +
               (this.loanValue.split(".")[1] + "").split("")[0] +
               (Number((this.loanValue.split(".")[1] + "").split("")[1]) + 1);
-            let longnummiddle = this.loanValue.split(".")[0] + longnum;
+            let longnummiddle = this.loanValuePositive.split(".")[0] + longnum;
             hhh = longnummiddle.split("").reverse();
           } else {
             hhh = (
-              this.loanValue.split(".")[0] +
+              this.loanValuePositive.split(".")[0] +
               this.loanValue.split(".")[1].slice(0, 2) +
               ""
             )
@@ -266,7 +285,6 @@ export default {
           }
         }
       }
-      console.log(hhh)
       this.loanCountArray = hhh;
       this.borrowCountArray = [];
       this.borrowValue = "";
@@ -375,9 +393,6 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      .red{
-        color: red;
-      }
       .div-box {
         flex: 1;
         display: flex;
@@ -454,6 +469,9 @@ export default {
       box-sizing: border-box;
       border: 1px solid #202e30;
     }
+  }
+  .red {
+    color: red
   }
 }
 </style>
