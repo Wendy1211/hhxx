@@ -23,61 +23,12 @@ Vue.prototype.$post = post
 Vue.prototype.$get = get
 
 //全局函数=>格式化新增凭证的借贷、合计
-Vue.prototype.typeFix = function(value,Positive){
-  let hhh = "";
-      if(value.indexOf('-') != -1) {
-        this.Positive = value.split('-')[1]
-      } else {
-        this.Positive = value
-      }
-      if (
-        !/^[-]?\d+(\.\d+)?$/.test(value) &&
-        value != ""
-      ) {
-        this.$message({
-          type: "primary",
-          message: "格式不正确！"
-        });
-        return;
-      }
-      if (value.indexOf(".") == -1) {
-        if (value.length) {
-          hhh = (this.Positive + "00").split("").reverse();
-        }
-      } else {
-        if (value.split(".")[1].length == 2) {
-          hhh = this.Positive
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (value.split(".")[1].length == 1) {
-          const middle = this.Positive + "0";
-          hhh = middle
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (value.split(".")[1].length > 2) {
-          if ((value.split(".")[1] + "").split("")[2] >= 5) {
-            let longnum =
-              "" +
-              (value.split(".")[1] + "").split("")[0] +
-              (Number((value.split(".")[1] + "").split("")[1]) + 1);
-            let longnummiddle = this.Positive.split(".")[0] + longnum;
-            hhh = longnummiddle.split("").reverse();
-          } else {
-            hhh = (
-              this.Positive.split(".")[0] +
-              value.split(".")[1].slice(0, 2) +
-              ""
-            )
-              .split("")
-              .reverse();
-          }
-        }
-      }
-}
+import typeFix from './assets/global/js/typefix'
+Vue.prototype.typeFix = typeFix
+
+//人民币转大写
+import  atoc from './assets/global/js/rmbtrans'
+Vue.prototype.atoc = atoc
 
 // 配置全局过滤器
 Object.keys(globalFilter).forEach(key => {

@@ -70,14 +70,12 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue'></voucherList>
+          <voucherList v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue' @addclick='handleAddRow' @deleteclick='handleDeleteRow' ></voucherList>
         </div>
         <!-- 合计 -->
         <div class="content-footer">
           <div class="total">&nbsp;&nbsp;&nbsp;合计：
-            <span v-if="borrowCount == loanCount">
-              <span v-for="(item,index) in dxsz" :key="index">{{zfall.item}}</span>
-            </span>
+            <span v-if="borrowCount == loanCount">{{dxsz}}</span>
           </div>
           <div class="total-borrow" :class="borrowCount < 0 ? 'redbox' : ''">
             <div>{{borrowAllArray[12] == undefined ? '' : borrowAllArray[12]}}</div>
@@ -141,17 +139,6 @@ export default {
         item.loan = ''
       })
     },
-    // mounted() {
-    //   let borrowmiddle = 0;
-    //   let loanmiddle = 0;
-    //   this.list.forEach(item => {
-    //     borrowmiddle += Number(item.borrow)
-    //     loanmiddle += Number(item.loan)
-    //   })
-    //   this.borrowAllArray = (borrowmiddle + '').split('').reverse()
-    //   this.loanAllArray = (loanmiddle + '').split('').reverse()
-    //   console.log(111)
-    // },
     data() {
       return {
         value1: '',//日期
@@ -165,20 +152,7 @@ export default {
         num:1,
         borrowCount: 0,
         loanCount: 0,
-        dxsz: [],
-        zfall: {
-          '-': "负",
-          '0': "零",
-          '1': "一",
-          '2': "二",
-          '3': "三",
-          '4': "四",
-          '5': "五",
-          '6': "六",
-          '7': "七",
-          '8': "八",
-          '9': "九"
-        }
+        dxsz: '',
       }
     },
     watch: {
@@ -231,26 +205,35 @@ export default {
         })
         this.borrowCount = borrowmiddle
         this.loanCount = loanmiddle
-        if(borrowmiddle == 0) {
+        const borrowArray = this.typeFix(this.borrowCount + '')
+        const loanArray = this.typeFix(this.loanCount + '')
+        if(borrowArray[2] == "0") {
           this.borrowAllArray = []
-        } else if(borrowmiddle < 0)
-        {
-          this.borrowAllArray = (borrowmiddle + '00').split('-')[1].split('').reverse()
         } else {
-          this.borrowAllArray = (borrowmiddle + '00').split('').reverse()
+          this.borrowAllArray = borrowArray
         }
-        if(loanmiddle == 0) {
+        if(loanArray[2] == "0") {
           this.loanAllArray = []
-        } else if(loanmiddle < 0)
-        {
-          this.loanAllArray = (loanmiddle + '00').split('-')[1].split('').reverse()
         } else {
-          this.loanAllArray = (loanmiddle + '00').split('').reverse()
+          this.loanAllArray = loanArray
+        }
+        if(borrowmiddle == loanmiddle) {
+          this.dxsz = this.atoc(borrowmiddle)
         }
       },
       // 凭证号
       handleChange(value) {
         console.log(value);
+      },
+      handleAddRow(value){
+        const {type,index} = value
+        this.list.splice(index,0,{})
+      },
+      handleDeleteRow(value){
+        const {type,index} = value
+        if(this.list.length > 4){
+          this.list.splice(index,1)
+        }
       },
       // 保存并新增
       saveNew(){
@@ -284,7 +267,7 @@ export default {
   position: relative;
   margin: 0px auto;
   width: 1200px;
-  height: 562px;
+  height: 552px;
   // 左右切换
   .left{
     position: absolute;
@@ -413,10 +396,13 @@ export default {
         flex: 1;
         width: 256px;
         display: flex;
+        line-height: 60px;
         border: 1px solid #666;
         border-bottom: 1.5px solid #666666;
         div {
           flex: 1;
+          line-height: 60px; 
+          text-align: center;
           border-right: 1px solid #ccc;
         }
         div:last-child {
@@ -437,6 +423,8 @@ export default {
         border-top: 1px solid #666666;
         div {
           flex: 1;
+          line-height: 60px; 
+          text-align: center;
           border-right: 1px solid #ccc;
         }
         div:last-child {
@@ -535,7 +523,7 @@ export default {
   text-align: right;
   .el-button{
     color: #fff;
-    background-color: #668CFF ;
+    background-color: #34A8FF ;
   }
 }
 .redbox {

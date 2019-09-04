@@ -98,9 +98,7 @@ export default {
       borrowInput: false,
       loanInput: false,
       borrowValue: "",
-      borrowValuePositive: "",
       loanValue: "",
-      loanValuePositive: "",
       restaurants: [],
       state1: "",
       state2: "",
@@ -146,82 +144,29 @@ export default {
     // 摘要下拉选择
     handleSelect(item) {
       console.log(item);
-      this.$bus.$emit('digest',item)
     },
     // 摘要 默认第一行摘要
     handleFocus(item){
-      this.$bus.$on('digest',(res=>{
-        if(res){
-          this.state1=res.value
-        }
-      }));
+      console.log(item)
     },
     // 借方
     borrowClick() {
       this.borrowInput = true;
       this.$nextTick(() => {
         this.$refs.borrowgain.focus();
+        this.borrowValue = ""
       });
     },
     borrowBlurEvent() {
-      let hhh = "";
-      if(this.borrowValue.indexOf('-') != -1) {
-        this.borrowValuePositive = this.borrowValue.split('-')[1]
-      } else {
-        this.borrowValuePositive = this.borrowValue
+      const array= this.typeFix(this.borrowValue)
+      this.borrowCountArray = array
+      console.log(this.borrowValue)
+      if(this.borrowValue != ""){
+        this.loanValue = "";
+        this.loanCountArray = [];
       }
-      if (
-        !/^[-]?\d+(\.\d+)?$/.test(this.borrowValue) &&
-        this.borrowValue != ""
-      ) {
-        this.$message({
-          type: "primary",
-          message: "格式不正确！"
-        });
-        return;
-      }
-      if (this.borrowValue.indexOf(".") == -1) {
-        if (this.borrowValue.length) {
-          hhh = (this.borrowValuePositive + "00").split("").reverse();
-        }
-      } else {
-        if (this.borrowValue.split(".")[1].length == 2) {
-          hhh = this.borrowValuePositive
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (this.borrowValue.split(".")[1].length == 1) {
-          const middle = this.borrowValuePositive + "0";
-          hhh = middle
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (this.borrowValue.split(".")[1].length > 2) {
-          if ((this.borrowValue.split(".")[1] + "").split("")[2] >= 5) {
-            let longnum =
-              "" +
-              (this.borrowValue.split(".")[1] + "").split("")[0] +
-              (Number((this.borrowValue.split(".")[1] + "").split("")[1]) + 1);
-            let longnummiddle = this.borrowValuePositive.split(".")[0] + longnum;
-            hhh = longnummiddle.split("").reverse();
-          } else {
-            hhh = (
-              this.borrowValuePositive.split(".")[0] +
-              this.borrowValue.split(".")[1].slice(0, 2) +
-              ""
-            )
-              .split("")
-              .reverse();
-          }
-        }
-      }
-      this.borrowCountArray = hhh;
-      this.loanCountArray = [];
-      this.loanValue = "";
       this.borrowInput = false;
-      this.$emit('flag',{borrow: this.borrowValue,loan: this.loanValue,index: this.index})
+      this.$emit('flag',{ borrow: this.borrowValue,loan: this.loanValue,index: this.index })
     },
     // 贷方
     loanClick() {
@@ -229,73 +174,24 @@ export default {
       this.$nextTick(() => {
         // 点击 出现input 同时获得焦点
         this.$refs.loangain.focus();
+        this.loanValue = ""
       });
     },
     loanBlurEvent() {
-      let hhh = "";
-      if(this.loanValue.indexOf('-') != -1) {
-        this.loanValuePositive = this.loanValue.split('-')[1]
-      } else {
-        this.loanValuePositive = this.loanValue
+      const array = this.typeFix(this.loanValue)
+      this.loanCountArray = array
+      if(this.loanValue != ""){
+        this.borrowValue = "";
+        this.borrowCountArray = [];
       }
-      if (
-        !/^[-]?\d+(\.\d+)?$/.test(this.loanValue) &&
-        this.loanValue != ""
-      ) {
-        this.$message({
-          type: "primary",
-          message: "内容必须为数字！"
-        });
-        return;
-      }
-      if (this.loanValue.indexOf(".") == -1) {
-        if (this.loanValue.length) {
-          hhh = (this.loanValuePositive + "00").split("").reverse();
-        }
-      } else {
-        if (this.loanValue.split(".")[1].length == 2) {
-          hhh = this.loanValuePositive
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (this.loanValue.split(".")[1].length == 1) {
-          const middle = this.loanValuePositive + "0";
-          hhh = middle
-            .split(".")
-            .join("")
-            .split("")
-            .reverse();
-        } else if (this.loanValue.split(".")[1].length > 2) {
-          if ((this.loanValue.split(".")[1] + "").split("")[2] >= 5) {
-            let longnum =
-              "" +
-              (this.loanValue.split(".")[1] + "").split("")[0] +
-              (Number((this.loanValue.split(".")[1] + "").split("")[1]) + 1);
-            let longnummiddle = this.loanValuePositive.split(".")[0] + longnum;
-            hhh = longnummiddle.split("").reverse();
-          } else {
-            hhh = (
-              this.loanValuePositive.split(".")[0] +
-              this.loanValue.split(".")[1].slice(0, 2) +
-              ""
-            )
-              .split("")
-              .reverse();
-          }
-        }
-      }
-      this.loanCountArray = hhh;
-      this.borrowCountArray = [];
-      this.borrowValue = "";
       this.loanInput = false;
       this.$emit('flag',{borrow: this.borrowValue,loan: this.loanValue,index: this.index})
     },
     handleAdd() {
-      console.log(11);
+      this.$emit('addclick',{type:"add",index:this.index})
     },
     handleDelete() {
-      console.log(22);
+      this.$emit('deleteclick',{type:"delete",index:this.index})
     }
   },
   mounted() {
@@ -375,6 +271,7 @@ export default {
     border-top: 1px solid #666666;
     line-height: 60px;
   }
+  
   .total {
     flex: 2;
     display: flex;
