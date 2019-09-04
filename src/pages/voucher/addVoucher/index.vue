@@ -75,8 +75,10 @@
         <!-- 合计 -->
         <div class="content-footer">
           <div class="total">&nbsp;&nbsp;&nbsp;合计：
-            <span v-if="borrowCount == loanCount">
-              <span v-for="(item,index) in dxsz" :key="index">{{zfall.item}}</span>
+            <!-- <span v-if="borrowCount == loanCount"> -->
+            <span>
+              <span>{{heji}}</span>
+              <!-- <span v-for="(item,index) in dxsz" :key="index">{{zfall.item}}</span> -->
             </span>
           </div>
           <div class="total-borrow" :class="borrowCount < 0 ? 'redbox' : ''">
@@ -165,19 +167,20 @@ export default {
         num:1,
         borrowCount: 0,
         loanCount: 0,
+        heji:'',
         dxsz: [],
         zfall: {
           '-': "负",
           '0': "零",
-          '1': "一",
-          '2': "二",
-          '3': "三",
-          '4': "四",
-          '5': "五",
-          '6': "六",
-          '7': "七",
-          '8': "八",
-          '9': "九"
+          '1': "壹",
+          '2': "贰",
+          '3': "叁",
+          '4': "肆",
+          '5': "伍",
+          '6': "陆",
+          '7': "柒",
+          '8': "捌",
+          '9': "玖"
         }
       }
     },
@@ -236,7 +239,7 @@ export default {
         } else if(borrowmiddle < 0)
         {
           this.borrowAllArray = (borrowmiddle + '00').split('-')[1].split('').reverse()
-        } else {
+        } else { 
           this.borrowAllArray = (borrowmiddle + '00').split('').reverse()
         }
         if(loanmiddle == 0) {
@@ -247,6 +250,11 @@ export default {
         } else {
           this.loanAllArray = (loanmiddle + '00').split('').reverse()
         }
+        if(this.borrowCount==this.loanCount){
+
+          this.heji="hhhh"
+        }
+
       },
       // 凭证号
       handleChange(value) {
@@ -284,7 +292,7 @@ export default {
   position: relative;
   margin: 0px auto;
   width: 1200px;
-  height: 562px;
+  height: 552px;
   // 左右切换
   .left{
     position: absolute;
@@ -413,10 +421,13 @@ export default {
         flex: 1;
         width: 256px;
         display: flex;
+        line-height: 60px;
         border: 1px solid #666;
         border-bottom: 1.5px solid #666666;
         div {
           flex: 1;
+          line-height: 60px; 
+          text-align: center;
           border-right: 1px solid #ccc;
         }
         div:last-child {
@@ -437,6 +448,8 @@ export default {
         border-top: 1px solid #666666;
         div {
           flex: 1;
+          line-height: 60px; 
+          text-align: center;
           border-right: 1px solid #ccc;
         }
         div:last-child {
@@ -535,7 +548,7 @@ export default {
   text-align: right;
   .el-button{
     color: #fff;
-    background-color: #668CFF ;
+    background-color: #34A8FF ;
   }
 }
 .redbox {

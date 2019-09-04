@@ -146,15 +146,10 @@ export default {
     // 摘要下拉选择
     handleSelect(item) {
       console.log(item);
-      this.$bus.$emit('digest',item)
     },
     // 摘要 默认第一行摘要
     handleFocus(item){
-      this.$bus.$on('digest',(res=>{
-        if(res){
-          this.state1=res.value
-        }
-      }));
+      console.log(item)
     },
     // 借方
     borrowClick() {
@@ -221,7 +216,7 @@ export default {
       this.loanCountArray = [];
       this.loanValue = "";
       this.borrowInput = false;
-      this.$emit('flag',{borrow: this.borrowValue,loan: this.loanValue,index: this.index})
+      this.$emit('flag',{ borrow: this.borrowValue,loan: this.loanValue,index: this.index })
     },
     // 贷方
     loanClick() {
@@ -375,6 +370,7 @@ export default {
     border-top: 1px solid #666666;
     line-height: 60px;
   }
+  
   .total {
     flex: 2;
     display: flex;
