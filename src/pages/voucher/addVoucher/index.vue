@@ -70,7 +70,14 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue' @addclick='handleAddRow' @deleteclick='handleDeleteRow' ></voucherList>
+          <voucherList 
+          v-for="(item,index) in list"
+          :index="index"
+          :key="index"
+          @flag='handleComponentsValue'
+          @addclick='handleAddRow'
+          @deleteclick='handleDeleteRow' >
+          </voucherList>
         </div>
         <!-- 合计 -->
         <div class="content-footer">
@@ -162,6 +169,7 @@ export default {
       }
     },
     methods:{
+      // 下拉建议 组件
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
@@ -194,6 +202,7 @@ export default {
       handleLeft(){
         console.log('left')
       },
+      // 合计
       handleComponentsValue(val) {
         this.list[val.index].borrow = val.borrow
         this.list[val.index].loan = val.loan
@@ -217,6 +226,7 @@ export default {
         } else {
           this.loanAllArray = loanArray
         }
+        // 金额大写
         if(borrowmiddle == loanmiddle) {
           this.dxsz = this.atoc(borrowmiddle)
         }
@@ -225,10 +235,12 @@ export default {
       handleChange(value) {
         console.log(value);
       },
+      // 增加行 
       handleAddRow(value){
         const {type,index} = value
         this.list.splice(index,0,{})
       },
+      // 删除行
       handleDeleteRow(value){
         const {type,index} = value
         if(this.list.length > 4){
@@ -240,7 +252,7 @@ export default {
         console.log(111)
       },
       saveS(){
-        console.log(222222)
+        console.log(222)
       }
     },
     mounted() {
@@ -262,12 +274,14 @@ export default {
   width: 1220px;
   padding: 10px;
   margin: 0 auto;
+
 }
 .card {
+  overflow-y: auto;
   position: relative;
   margin: 0px auto;
   width: 1200px;
-  height: 552px;
+  height: 542px;
   // 左右切换
   .left{
     position: absolute;
@@ -297,7 +311,6 @@ export default {
     i{
       color: #fff;
       font-size: 22px;
-
     }
   }
   // 表上信息
@@ -359,11 +372,12 @@ export default {
   // 表
   .content {
     width: 1110px;
-    height: 560px;
+    height: 360px;
     margin: 20px auto;
     // text-align: center;
     .content-components{
       width: 1110px;
+      // overflow: auto;
     }
     .content-head,.content-footer{
       width: 1020px;
@@ -511,6 +525,7 @@ export default {
   .bottom{
     margin-left: 50px;
     margin-top: 20px;
+    margin-bottom: 20px;
     span{
       margin-right: 200px;
     }

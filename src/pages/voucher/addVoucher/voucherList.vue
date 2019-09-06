@@ -1,10 +1,13 @@
 <template>
   <div class="content-row">
     <div class="content-item">
+      <!-- 加一行 -->
       <div class="add" @click="handleAdd">
         <i class="el-icon-circle-plus-outline"></i>
       </div>
+      <!-- 表 内容 -->
       <div class="item-box">
+        <!-- 摘要 -->
         <div class="digest">
           <!-- 带建议的下拉框 -->
           <el-autocomplete
@@ -16,6 +19,7 @@
             @select="handleSelect"
           ></el-autocomplete>
         </div>
+        <!-- 科目 -->
         <div class="subject">
           <el-autocomplete
             class="inline-input"
@@ -25,6 +29,7 @@
             @select="handleSelect1"
           ></el-autocomplete>
         </div>
+        <!-- 借 -->
         <div class="borrow">
           <div class="borrow-bottom" @click="borrowClick">
             <div class="div-box" v-show="!borrowInput" :class="borrowValue < 0 ? 'red' : ''">
@@ -52,6 +57,7 @@
             />
           </div>
         </div>
+        <!-- 贷 -->
         <div class="loan">
           <div class="loan-bottom" @click="loanClick">
             <div class="div-box" v-show="!loanInput" :class="loanValue < 0 ? 'red' : ''">
@@ -79,6 +85,7 @@
           </div>
         </div>
       </div>
+      <!-- 删一行 -->
       <div class="delete" @click="handleDelete">
         <i class="el-icon-delete"></i>
       </div>
@@ -106,7 +113,10 @@ export default {
       loanCountArray: [],
     };
   },
+
   methods: {
+    
+    // 下拉建议 组件
     querySearch(queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString
@@ -126,15 +136,15 @@ export default {
     loadAll() {
       return [
         { value: "提现1" },
+        { value: "提现2" },
         { value: "提现3" },
-        { value: "提现4" },
-        { value: "利息收入7" },
+        { value: "利息收入4" },
+        { value: "利息收入5" },
         { value: "利息收入6" },
-        { value: "利息收入" },
+        { value: "支付工资7" },
+        { value: "支付工资8" },
         { value: "支付工资9" },
-        { value: "支付工资" },
-        { value: "支付工资80" },
-        { value: "支付工资5" }
+        { value: "支付工资0" }
       ];
     },
     // 科目下拉选择
@@ -154,7 +164,7 @@ export default {
       this.borrowInput = true;
       this.$nextTick(() => {
         this.$refs.borrowgain.focus();
-        this.borrowValue = ""
+        // this.borrowValue = ""
       });
     },
     borrowBlurEvent() {
@@ -174,7 +184,7 @@ export default {
       this.$nextTick(() => {
         // 点击 出现input 同时获得焦点
         this.$refs.loangain.focus();
-        this.loanValue = ""
+        // this.loanValue = ""
       });
     },
     loanBlurEvent() {
@@ -183,10 +193,11 @@ export default {
       if(this.loanValue != ""){
         this.borrowValue = "";
         this.borrowCountArray = [];
-      }
+      } 
       this.loanInput = false;
       this.$emit('flag',{borrow: this.borrowValue,loan: this.loanValue,index: this.index})
     },
+    // 增/删行
     handleAdd() {
       this.$emit('addclick',{type:"add",index:this.index})
     },
