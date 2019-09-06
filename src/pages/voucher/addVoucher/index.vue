@@ -70,13 +70,14 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList 
+          <voucherList :digest='digest'
           v-for="(item,index) in list"
           :index="index"
           :key="index"
           @flag='handleComponentsValue'
           @addclick='handleAddRow'
-          @deleteclick='handleDeleteRow' >
+          @deleteclick='handleDeleteRow'
+          @sub="handlesub">
           </voucherList>
         </div>
         <!-- 合计 -->
@@ -160,6 +161,7 @@ export default {
         borrowCount: 0,
         loanCount: 0,
         dxsz: '',
+        digest: ''
       }
     },
     watch: {
@@ -253,10 +255,15 @@ export default {
       },
       saveS(){
         console.log(222)
+      },
+      // 摘要 处理
+      handlesub(item) {
+        this.digest = item
       }
     },
     mounted() {
       this.restaurants = this.loadAll();
+      
     }
 }
 </script>

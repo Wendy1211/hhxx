@@ -51,7 +51,9 @@
         },
         methods: {
             isActive(path) {
-                return path === this.$route.fullPath;
+                // return path === this.$route.fullPath;
+                
+                return path === this.$route.path;
             },
             // 关闭单个标签
             closeTags(index) {
@@ -91,7 +93,8 @@
             // 设置标签
             async setTags(route){
                 const isExist = this.tagsList.some(item => {
-                    return item.path === route.fullPath;
+                    // return item.path === route.fullPath;
+                    return item.path === route.path;
                 })
                 if(!isExist){
                     this.tagsList.push({

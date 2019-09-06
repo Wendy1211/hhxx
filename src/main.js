@@ -22,6 +22,7 @@ Vue.prototype.$bus = bus
 Vue.prototype.$post = post
 Vue.prototype.$get = get
 
+
 //全局函数=>格式化新增凭证的借贷、合计
 import typeFix from './assets/global/js/typefix'
 Vue.prototype.typeFix = typeFix
@@ -29,6 +30,10 @@ Vue.prototype.typeFix = typeFix
 //人民币转大写
 import  atoc from './assets/global/js/rmbtrans'
 Vue.prototype.atoc = atoc
+
+// 全局api接口
+import api from './api/index'
+Vue.prototype.api = api;
 
 // 配置全局过滤器
 Object.keys(globalFilter).forEach(key => {
