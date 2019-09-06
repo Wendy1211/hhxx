@@ -70,7 +70,7 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue' @addclick='handleAddRow' @deleteclick='handleDeleteRow' ></voucherList>
+          <voucherList :digest='digest' v-for="(item,index) in list" :index="index" :key="index" @flag='handleComponentsValue' @addclick='handleAddRow' @deleteclick='handleDeleteRow' @sub="handlesub"></voucherList>
         </div>
         <!-- 合计 -->
         <div class="content-footer">
@@ -153,6 +153,7 @@ export default {
         borrowCount: 0,
         loanCount: 0,
         dxsz: '',
+        digest: ''
       }
     },
     watch: {
@@ -241,6 +242,9 @@ export default {
       },
       saveS(){
         console.log(222222)
+      },
+      handlesub(item) {
+        this.digest = item
       }
     },
     mounted() {

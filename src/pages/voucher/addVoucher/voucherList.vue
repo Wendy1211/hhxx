@@ -14,6 +14,7 @@
             :fetch-suggestions="querySearch"
             :trigger-on-focus="false"
             @select="handleSelect"
+            @click="handleDigestChilk"
           ></el-autocomplete>
         </div>
         <div class="subject">
@@ -91,6 +92,9 @@ export default {
   props: {
     'index': {
       type: Number,
+    },
+    digest: {
+      type: String
     }
   },
   data() {
@@ -105,6 +109,11 @@ export default {
       borrowCountArray: [],
       loanCountArray: [],
     };
+  },
+  watch:{
+    state1 :function(){
+      this.$emit('sub',this.state1)
+    }
   },
   methods: {
     querySearch(queryString, cb) {
@@ -144,10 +153,14 @@ export default {
     // 摘要下拉选择
     handleSelect(item) {
       console.log(item);
+
     },
     // 摘要 默认第一行摘要
     handleFocus(item){
       console.log(item)
+      if(this.state1 != this.digest) {
+        this.state1 = this.digest
+      }
     },
     // 借方
     borrowClick() {
@@ -192,6 +205,11 @@ export default {
     },
     handleDelete() {
       this.$emit('deleteclick',{type:"delete",index:this.index})
+    },
+    handleDigestChilk() {
+      if(this.state1 != this.digest) {
+        this.state1 = this.digest
+      }
     }
   },
   mounted() {
