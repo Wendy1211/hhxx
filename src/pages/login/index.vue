@@ -3,8 +3,8 @@
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                <el-form-item prop="email">
+                    <el-input v-model="ruleForm.email" placeholder="email">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
@@ -28,11 +28,11 @@
         data: function(){
             return {
                 ruleForm: {
-                    username: 'admin',
-                    password: '123123'
+                    email: '871228582@qq.com',
+                    password: '123456'
                 },
                 rules: {
-                    username: [
+                    email: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
                     ],
                     password: [
@@ -45,6 +45,14 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        // this.$post("/api/auth/login",this.ruleForm)
+                        // .then(res=>{
+                        //     // console.log(res)
+                            
+                        // })
+                        // .catch(err=>{
+                        //     console.log(err);
+                        // })
                         this.$store.commit('LOGIN_IN', this.ruleForm.username)
                         // localStorage.setItem('ms_username',this.ruleForm.username);
                         this.$router.replace('/')

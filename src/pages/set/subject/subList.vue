@@ -77,7 +77,6 @@ export default {
         let data= {bool:2}
         this.$bus.$emit('subBool',data)
     },
-
     addClass(val){
       this.active = val
     }
@@ -104,7 +103,6 @@ export default {
         var rightTo_ = document.querySelectorAll('.type_title');
         for (var i = 0; i < rightTo_.length; i++) {
             if(zHeight - rightTo_[i].offsetParent.offsetTop > 10 ){
-
                 this.active = i
             }
         };

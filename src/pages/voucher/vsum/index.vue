@@ -137,7 +137,7 @@ export default {
       // 表头颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex === 0) {
-          return "background: #F2F2F2;";
+          return "background: #F2F2F2";
         } else {
           return "";
         }
@@ -167,7 +167,7 @@ export default {
     margin-left: 600px;
     .el-button{
       color: #fff;
-      background-color: #34A8FF;
+      background-color: @mainNavColor;
     }
   }
 }

@@ -18,7 +18,7 @@ export default new Router({
           component: Login
       },
   ],
-  mode: 'history'
+  mode: 'history',
 })
 
 /* 准备动态添加的路由 */
