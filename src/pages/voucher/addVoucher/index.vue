@@ -19,11 +19,14 @@
             <el-date-picker
               v-model="value1"
               type="date"
+              @change="handleChangeDate"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期">
             </el-date-picker>
         </span>
         <span class="title-b">2019年第5期</span>
-        <span class="title-c">附单据<input class="title-four" placeholder="0">张</span>
+        <span class="title-c">附单据<input class="title-four" v-model="fujian" @change="handleChangeNum">张</span>
       </div>
       <!-- 表内容 -->
       <div class="content">
@@ -126,11 +129,18 @@
       </div>
     </el-card>
     <!-- 保存按钮 -->
-    <div class="footer">
+    <div class="footer" v-if="!saveOnly">
       <el-button size="small" @click="saveNew">保存并新增(F12)</el-button>
       <el-button size="small" @click="saveS">保存(Ctrl+S)</el-button>
     </div>
-    
+    <!-- 点击保存之后 出现新的按钮 -->
+    <div class="footer1" v-if="saveOnly">
+      <el-button size="small">打印</el-button>
+      <el-button size="small" @click='saveOnly=false'>新增</el-button>
+      <el-button size="small">保存(Ctrl+S)</el-button>
+      <el-button size="small">审核</el-button>
+      <el-button size="small" class="danger">删除</el-button>
+    </div>
 </div>
     
 </template>
@@ -158,9 +168,11 @@ export default {
         borrowAllArray: [],
         loanAllArray: [],
         num:1,
+        fujian:0,
         borrowCount: 0,
         loanCount: 0,
         dxsz: '',
+        saveOnly:false,
         digest: ''
       }
     },
@@ -231,11 +243,23 @@ export default {
         // 金额大写
         if(borrowmiddle == loanmiddle) {
           this.dxsz = this.atoc(borrowmiddle)
+          console.log(this.borrowCount)
         }
       },
       // 凭证号
       handleChange(value) {
         console.log(value);
+        this.num = value
+      },
+      // 日期
+      handleChangeDate(value){
+        console.log(value)
+        this.value1 = value
+      },
+      // 附件张数
+      handleChangeNum(value){
+        console.log(value.target.value)
+        this.fujian = value.target.value
       },
       // 增加行 
       handleAddRow(value){
@@ -252,18 +276,42 @@ export default {
       // 保存并新增
       saveNew(){
         console.log(111)
+        const digestList = this.list.filter(function(item){
+          item.digest != ''
+        })
+        console.log(digestList.length)
+        if(digestList.length < 2){
+          this.$message({
+            type: 'warning',
+            message: '有效数据不能少于两行!'
+          })
+        } else {
+          if(this.borrowCount!=this.loanCount){
+            this.$message({
+              type: 'warning',
+              message: '录入借贷不平衡!'
+            })
+          return;
+          } 
+        }
       },
       saveS(){
         console.log(222)
+        this.saveOnly = true;
       },
       // 摘要 处理
       handlesub(item) {
         this.digest = item
-      }
+      },
     },
-    mounted() {
+    async mounted() {
       this.restaurants = this.loadAll();
-      
+      await Promise.resolve(this.api.voucher({book_id:1,period:201908}))
+      .then(res=>{
+        console.log(res)
+      }).catch(err=>{
+        console.log(err)
+      })
     }
 }
 </script>
@@ -539,13 +587,19 @@ export default {
   }
 }
 // 保存按钮
-.footer{
+.footer,.footer1{
   margin: 15px 1px 0px 0;
   width: 1120px;
   text-align: right;
   .el-button{
     color: #fff;
-    background-color: #34A8FF ;
+    border: transparent;
+    background-color: @mainNavColor;
+  }
+  .danger{
+    color: #fff;
+    border: transparent;
+    background-color: #F07878;
   }
 }
 .redbox {

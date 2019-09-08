@@ -1,10 +1,10 @@
 <template>
     
-    <div class="tags" v-if="showTags" ref="tags">
+    <div class="tags" v-if="showTags">
         <div class="tags-close-box1">
             <el-button size="mini" @click="listright"><i class="el-icon-caret-left"></i></el-button>
         </div>
-        <ul class="content">
+        <ul class="content" ref="tags">
             <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index" ref="wrapper">
                 <router-link :to="item.path" class="tags-li-title">
                     {{item.title}}
@@ -12,22 +12,9 @@
                 <span class="tags-li-icon" @click="closeTags(index)" v-if="item.name!='home'"><i class="el-icon-close"></i></span>
             </li>
         </ul>
-        <!-- <div class="tags-close-box">
-            <el-dropdown @command="handleTags">
-                <el-button size="mini" type="primary">
-                    标签选项<i class="el-icon-arrow-down el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu size="small" slot="dropdown">
-                    <el-dropdown-item command="other">关闭其他</el-dropdown-item>
-                    <el-dropdown-item command="all">关闭所有</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div> -->
         <div class="tags-close-box" >
             <el-button size="mini" @click="listLeft"><i class="el-icon-caret-right"></i></el-button>
         </div>
-        <!-- listLeft -->
-        <!-- listright -->
     </div>
 </template>
 
@@ -45,13 +32,13 @@
                 liWidth:[],
                 len:'',
                 zyd:0,
-                initYd:"",
                 num:0,
+                yd:[],
+                lyd:0,
             }
         },
         methods: {
             isActive(path) {
-                // return path === this.$route.fullPath;
                 
                 return path === this.$route.path;
             },
@@ -60,55 +47,47 @@
                 const delItem = this.tagsList.splice(index, 1)[0];
                 const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
                 if (item) {
-                    delItem.path === this.$route.fullPath && this.$router.push(item.path);
+                    delItem.path === this.$route.path && this.$router.push(item.path);
                 }else{
                     this.$router.push('/');
                 }
                 let tagsW = this.$refs.tags.clientWidth;
                 let liW = this.sum(this.liWidth);
-                if( liW > tagsW && this.zyd != 0){
-                    let num = this.liWidth.length - this.len + 1;
-                    this.zyd += this.liWidth[num];
-                    this.initYd = this.zyd;
-                    this.$refs.wrapper[1].style.marginLeft = this.zyd+"px";
-                }
-            },
-            // 关闭全部标签
-            closeAll(){
-                this.tagsList = [{name:'home',path:"/home",title:'首页'}];
-                this.$router.push('/').catch((err)=>{});
-            },
-            // 关闭其他标签
-            closeOther(){
-                const curItem = this.tagsList.filter(item => {
-                    // 过滤当前选中路由和首页路由
-                    if(item.path === this.$route.fullPath || item.name === 'home'){
-                        return item;
+                if( this.yd.length > 0){
+                    if(parseInt( this.yd[0] ) > 0){
+                        this.yd[0] = this.yd[0] - this.liWidth[index];
+                    }else{
+                        this.yd.splice(0,1)
                     }
-                    // return item.path === this.$route.fullPath;
-                })
-               
-                this.tagsList = curItem;
+                    console.log(this.yd[0]);
+                    console.log(this.yd)
+                    this.lyd = this.liWidth[index]
+                    this.zyd += this.liWidth[index];
+                    if(this.zyd > 0){
+                        this.zyd = 0 ;
+                    }
+                    this.$refs.wrapper[0].style.marginLeft = this.zyd+"px";
+                }
             },
             // 设置标签
             async setTags(route){
                 const isExist = this.tagsList.some(item => {
-                    // return item.path === route.fullPath;
                     return item.path === route.path;
                 })
                 if(!isExist){
                     this.tagsList.push({
                         title: route.meta.name,
-                        path: route.fullPath,
+                        path: route.path,
                         name: route.matched[1].name
                     })
                     await this.setWidth();
                     let tagsW = this.$refs.tags.clientWidth;
                     let liW = this.sum(this.liWidth);
+                    let snum = this.liWidth.length - 1;
                     if(liW > tagsW){
-                        this.zyd -= this.liWidth[this.num];
+                        this.zyd -= this.liWidth[snum];
+                        this.yd.push(this.liWidth[snum]);
                         this.$refs.wrapper[0].style.marginLeft = this.zyd+"px";
-                        this.num++;
                     }
                 }
                 this.$bus.$emit('tags', this.tagsList);
@@ -138,25 +117,31 @@
             listLeft(){
                 let tagsW = this.$refs.tags.clientWidth;
                 let liW = this.sum(this.liWidth);
-                if( liW > tagsW && this.zyd > this.initYd){
-                    console.log(this.num)
-                    this.zyd -= this.liWidth[this.num];
+                if(this.num >= this.yd.length){
+                    this.num = this.yd.length - 1;
+                }
+                if( this.num >= 0){
+                    this.zyd -= this.yd[this.num];
                     this.$refs.wrapper[0].style.marginLeft = this.zyd+"px";
-                    this.num++
+                    this.num--;
                 }
             },
             listright(){
                 let tagsW = this.$refs.tags.clientWidth;
                 let liW = this.sum(this.liWidth);
-                if(!this.initYd){
-                    this.initYd = this.zyd;
+                if(this.num < 0 ){
+                    this.num = 0
                 }
-                console.log(this.zyd)
+                if(this.num ==this.yd.length){
+                    this.num = this.yd.length - 1;
+                }
                 if( liW > tagsW && this.zyd != 0){
-                    this.num--;
-                    this.zyd += this.liWidth[this.num];
+                    this.zyd += this.yd[this.num];
+                    if(this.zyd > this.lyd){
+                        this.zyd = this.lyd;
+                    }
                     this.$refs.wrapper[0].style.marginLeft = this.zyd+"px";
-                   
+                    this.num++;
                 }
             }
         },
@@ -178,7 +163,7 @@
             //     for (let i = 0, len = this.tagsList.length; i < len; i++) {
             //         const item = this.tagsList[i];
             //         console.log(item);
-            //         if(item.path === this.$route.fullPath){
+            //         if(item.path === this.$route.path){
             //             if(i < len - 1){
             //                 this.$router.push(this.tagsList[i+1].path);
             //             }else if(i > 0){
@@ -253,7 +238,7 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        margin-right: 8px;
+        margin-right: 7px;
         color: #666;
     }
 
@@ -267,12 +252,12 @@
     }
     .tags-close-box {
         position: absolute;
-        right: -70px;
+        right: -57px;
         top: 5px;
         box-sizing: border-box;
         padding-top: 1px;
         text-align: center;
-        width: 55px;
+        width: 30px;
         height: 30px;
         // background: #fff;
         // box-shadow: -3px 0 15px 3px rgba(0, 0, 0, .1);

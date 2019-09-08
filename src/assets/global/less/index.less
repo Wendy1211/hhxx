@@ -12,6 +12,7 @@ html,body{
     margin:0;
     padding:0;
     overflow: hidden;
+    font-size: 16px;
 }
 
 p{
@@ -32,5 +33,52 @@ img{vertical-align:top;border:none}
 @btnColor:#34A8FF;
 // 表头颜色
 @tableColor:#F2F2F2;
+
+// 高
+@inputHeight:32px;
+
+// 按钮大小
+.bigBtn{
+    background-color:@btnColor;
+    color: #fff;
+    width: 64px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0;
+}
+
+.smallBtn{
+    background-color:@btnColor;
+    width: 60px;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    padding: 0;
+}
+
+.tagBtn{
+    background-color:@btnColor;
+    width: 60px;
+    color: #fff;
+    height: 24px;
+    line-height: 30px;
+    padding: 0;
+}
+
+// 列表操作按钮
+.tableBtn{
+    background-color: @btnColor;
+    width: 60px;
+    color: #fff;
+    height: 25px;
+    line-height: 24px;
+    padding: 0;
+}
+
+// 全局列表样式
+.el-table--small{
+    font-size: 14px;
+    color:#222;
+}
 
 

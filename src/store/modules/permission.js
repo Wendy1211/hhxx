@@ -2,6 +2,7 @@ import { fetchPermission } from '@/api/permission'
 import router, { DynamicRoutes } from '@/router/index'
 import { recursionRouter, setDefaultRoute } from '@/utils/recursion-router'
 import dynamicRouter from '@/router/dynamic-router'
+import { items } from "../../assets/global/js/leftNav.json";
 
 export default {
     namespaced: true,
@@ -30,9 +31,10 @@ export default {
     },
     actions: {
         async FETCH_PERMISSION({ commit, state }) {
-            let permissionList = await Promise.resolve(fetchPermission()).then(res=>{
-                return res.data;
-            })
+            // let permissionList = await Promise.resolve(fetchPermission()).then(res=>{
+            //     return res.data;
+            // })
+            let permissionList = items;
             /*  根据权限筛选出我们设置好的路由并加入到path=''的children */
             let routes = recursionRouter(permissionList, dynamicRouter)
             let MainContainer = DynamicRoutes.find(v => v.path === '')
