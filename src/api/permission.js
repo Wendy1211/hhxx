@@ -8,3 +8,4 @@ export function fetchPermission() {
 export function login() {
     return get('/static/login.json')
 }
+
