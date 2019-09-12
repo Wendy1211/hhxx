@@ -218,9 +218,19 @@ export default {
     },
     watch: {
       borrowCount() {
-        this.dxsz = (this.borrowCount + '').split('')
-        // this.dxsz = this.borrowCount
+        if(this.borrowCount == this.loanCount){
+          this.dxsz = this.daxie(this.borrowCount)
+          this.heji = true
+        }
+      },
+      loanCount() {
+        if(this.borrowCount == this.loanCount){
+          this.dxsz = this.daxie(this.borrowCount)
+          this.heji = true
+        }
       }
+        // this.dxsz = (this.borrowCount + '').split('')
+        // this.dxsz = this.borrowCount
     },
     methods:{
       // 左右切换按钮
