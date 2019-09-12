@@ -8,9 +8,11 @@
       <!-- 表 内容 -->
       <div class="item-box">
         <!-- 摘要 -->
-        <div class="digest">
+        <div class="digest" ref="click1">
           <!-- 带建议的下拉框 -->
           <el-autocomplete
+            v-focus="focusIndex === 1"
+            @keydown.tab="nextFocus(1)"
             class="inline-input"
             v-model="state1"
             @focus="handleFocus"
@@ -23,6 +25,8 @@
         <!-- 科目 -->
         <div class="subject">
           <el-autocomplete
+            v-focus="focusIndex === 2"
+            @keydown.tab="nextFocus(2)"
             class="inline-input"
             v-model="state2"
             :fetch-suggestions="querySearch"
@@ -55,6 +59,8 @@
               ref="borrowgain"
               v-show="borrowInput"
               @blur="borrowBlurEvent"
+              v-focus="focusIndex === 3"
+              @keydown.tab="nextFocus(3)"
             />
           </div>
         </div>
@@ -82,6 +88,8 @@
               v-model="loanValue"
               v-show="loanInput"
               @blur="loanBlurEvent"
+              v-focus="focusIndex === 4"
+              @keydown.tab="nextFocus(4)"
             />
           </div>
         </div>
@@ -115,6 +123,7 @@ export default {
       state2: "",
       borrowCountArray: [],
       loanCountArray: [],
+      focusIndex: 1
     };
   },
 
@@ -221,6 +230,10 @@ export default {
       if(this.state1 != this.digest) {
         this.state1 = this.digest
       }
+    },
+    nextFocus(index) {
+      this.focusIndex = index + 1;
+      console.log(this.focusIndex)
     }
   },
   mounted() {
