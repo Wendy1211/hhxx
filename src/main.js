@@ -37,6 +37,9 @@ Vue.prototype.daxie = daxie
 import api from './api/index'
 Vue.prototype.api = api;
 
+//引入自定义focus
+import './assets/global/js/directive.js'
+
 // 配置全局过滤器
 Object.keys(globalFilter).forEach(key => {
     Vue.filter(key, globalFilter[key])
