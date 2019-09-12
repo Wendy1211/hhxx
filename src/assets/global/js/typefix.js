@@ -12,7 +12,7 @@ const typeFix = function(Value){
   ) {
     this.$message({
       type: "primary",
-      message: "格式不正确！"
+      message: "格式不正确!"
     });
     return;
   }

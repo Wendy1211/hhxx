@@ -44,7 +44,8 @@ export default {
         top: 60px;
         left: 0;
         bottom: 0;
-        overflow-y: scroll;
+        overflow-x: hidden;
+        overflow-y: auto;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
         -moz-user-select:none;/*火狐*/
         -webkit-user-select:none;/*webkit浏览器*/

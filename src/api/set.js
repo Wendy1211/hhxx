@@ -6,7 +6,7 @@ export const set = {}
 
 // 会计科目列表
 set['subList'] = function(data){
-   return post('/apis/subList',data)
+   return post('/apis/subject/subList',data)
 }
 
 
