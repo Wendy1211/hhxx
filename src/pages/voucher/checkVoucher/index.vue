@@ -137,7 +137,7 @@ export default {
     }
   }
   .btn{
-    margin-left: 170px;
+    margin-left: 150px;
     border: transparent solid;
     .el-button{
       color: #fff;

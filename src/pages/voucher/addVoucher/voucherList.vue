@@ -16,11 +16,12 @@
             class="inline-input"
             v-model="state1"
             @focus="handleFocus"
+            @input="handleInput"
             :fetch-suggestions="querySearch"
             :trigger-on-focus="false"
             @select="handleSelect"
-            @click="handleDigestChilk"
-          ></el-autocomplete>
+            @click="handleDigestChilk">
+          </el-autocomplete>
         </div>
         <!-- 科目 -->
         <div class="subject">
@@ -29,7 +30,8 @@
             @keydown.tab="nextFocus(2)"
             class="inline-input"
             v-model="state2"
-            :fetch-suggestions="querySearch"
+            @focus="handleFocus1"
+            :fetch-suggestions="querySearch1"
             placeholder
             @select="handleSelect1"
           ></el-autocomplete>
@@ -110,6 +112,12 @@ export default {
     },
     digest: {
       type: String
+    },
+    itemValue: {
+
+    },
+    updateover: {
+
     }
   },
   data() {
@@ -119,7 +127,8 @@ export default {
       borrowValue: "",
       loanValue: "",
       restaurants: [],
-      state1: "",
+      restaurants1: [],
+      state1: '',
       state2: "",
       borrowCountArray: [],
       loanCountArray: [],
@@ -128,51 +137,72 @@ export default {
   },
 
   watch:{
-    state1 : function(){
+    digest: function(){
       this.$emit('sub',this.state1)
+    },
+    updateover: function(){
+      if(this.updateover == 1) {
+        this.borrowValue = this.itemValue.amountDr
+        this.loanValue = this.itemValue.amountCr
+        this.borrowCountArray = this.typeFix(this.borrowValue)
+        this.loanCountArray = this.typeFix(this.loanValue)
+        this.state1 = this.itemValue.digest
+        this.state2 = this.itemValue.subject_id
+        console.log(this.borrowValue,this.loanValue,this.state1,this.state2)
+      }
     }
   },
+  mounted() {
+    this.restaurants = this.loadAll();
+    this.subList()
+
+  },
   methods: {
-    
-    // 下拉建议 组件
+    // 摘要下拉建议 组件
     querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString
-        ? restaurants.filter(this.createFilter(queryString))
-        : restaurants;
+      console.log(this.restaurants)
+      var results = this.restaurants
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     createFilter(queryString) {
       return restaurant => {
         return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) ===
-          0
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
         );
       };
     },
     loadAll() {
-      return [
-        { value: "提现1" },
-        { value: "提现2" },
-        { value: "提现3" },
-        { value: "利息收入4" },
-        { value: "利息收入5" },
-        { value: "利息收入6" },
-        { value: "支付工资7" },
-        { value: "支付工资8" },
-        { value: "支付工资9" },
-        { value: "支付工资0" }
-      ];
+      return
+       this.restaurants
+    },
+    // 科目下拉
+    querySearch1(queryString, cb) {
+      var restaurants1 = this.restaurants1;
+      var results = queryString
+        ? restaurants1.filter(this.createFilter(queryString))
+        : restaurants1;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter1(queryString) {
+      return restaurant => {
+        return (
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+        );
+      };
+    },
+    loadAll1() {
+      return
+       this.restaurants1
     },
     // 科目下拉选择
     handleSelect1(item) {
-      console.log(item);
+      console.log(item.value);
     },
     // 摘要下拉选择
     handleSelect(item) {
-      console.log(item);
-
+      console.log(item.value);
     },
     // 摘要 默认第一行摘要
     handleFocus(item){
@@ -180,6 +210,36 @@ export default {
       if(this.state1 != this.digest) {
         this.state1 = this.digest
       }
+    },
+    // 摘要列表
+    digestList(){
+      Promise.resolve(this.api.voucher['digestList']({name:this.state1}))
+      .then(res=>{
+        console.log(res)
+        this.restaurants = []
+        for(let i=0;i<res.data.list.length;i++){
+          this.restaurants.push({'value':res.data.list[i].name})
+        }
+      })
+    },
+    // 科目列表
+    subList(){
+      Promise.resolve(this.api.set['subList']({company_id:1}))
+      .then(res=>{
+        console.log(res)
+        this.restaurants1 = []
+        for(let i=0;i<res.data.list.length;i++){
+          this.restaurants1.push({'value':res.data.list[i].code+res.data.list[i].name})
+        }
+      })
+    },
+    // 摘要
+    async handleInput(){
+      await this.digestList()
+    },
+    // 科目
+    async handleFocus1(){
+      await this.subList()
     },
     // 借方
     borrowClick() {
@@ -236,9 +296,20 @@ export default {
       console.log(this.focusIndex)
     }
   },
-  mounted() {
-    this.restaurants = this.loadAll();
-  }
+  // mounted() {
+    
+    // this.$bus.$on('detail',(res)=>{
+    //     console.log(res)
+    //     this.state1 = res.digest;
+    //     this.state2 = res.subject_id
+    //     if(res.amountDr != 0.00){
+    //       this.borrowValue = Array(res.amountDr)
+    //     }
+    //     if(res.amountCr != 0.00){
+    //       this.loanValue = Array(res.amountCr)
+    //     }
+    // });
+  // }
 };
 </script>
 

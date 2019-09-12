@@ -30,6 +30,8 @@ Vue.prototype.typeFix = typeFix
 //人民币转大写
 import  atoc from './assets/global/js/rmbtrans'
 Vue.prototype.atoc = atoc
+import  daxie from './assets/global/js/daxie'
+Vue.prototype.daxie = daxie
 
 // 全局api接口
 import api from './api/index'

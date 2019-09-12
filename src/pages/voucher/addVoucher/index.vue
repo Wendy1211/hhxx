@@ -2,22 +2,22 @@
 <div class="body">
     <el-card class="card">
       <!-- 左右切换按钮 -->
-      <div class="left" @click="handleLeft">
+      <div class="left" @click="handleCut(-1)">
         <i class="el-icon-arrow-left"></i>
       </div>
-      <div class="right" @click="handleRight">
+      <div class="right" @click="handleCut(1)">
         <i class="el-icon-arrow-right"></i>
       </div>
       <div class="title">记账凭证</div>
       <!-- 表头上 信息 -->
       <div class="title-item">
         <span class="pzh">记-
-          <el-input-number size="mini" v-model="num" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+          <el-input-number size="mini" v-model="profile" controls-position="right" @change="handleChange" :min="1"></el-input-number>
           号
         </span>
         <span class="title-a">日期：
             <el-date-picker
-              v-model="value1"
+              v-model="voucher_date"
               type="date"
               @change="handleChangeDate"
               format="yyyy-MM-dd"
@@ -25,7 +25,7 @@
               placeholder="选择日期">
             </el-date-picker>
         </span>
-        <span class="title-b">2019年第5期</span>
+        <span class="title-b">{{period?period.slice(0,4)+'年第'+period.slice(-2)+'期':'2019年第08期'}}</span>
         <span class="title-c">附单据<input class="title-four" v-model="fujian" @change="handleChangeNum">张</span>
       </div>
       <!-- 表内容 -->
@@ -73,20 +73,24 @@
         </div>
         <!-- 一行 组件 -->
         <div class="content-components">
-          <voucherList :digest='digest'
+          <voucherList
+          :updateover='update' 
+          :digest='item.digest'
           v-for="(item,index) in list"
           :index="index"
           :key="index"
+          :itemValue="item"
           @flag='handleComponentsValue'
           @addclick='handleAddRow'
           @deleteclick='handleDeleteRow'
-          @sub="handlesub">
+          @sub="handlesub"
+          >
           </voucherList>
         </div>
         <!-- 合计 -->
         <div class="content-footer">
           <div class="total">&nbsp;&nbsp;&nbsp;合计：
-            <span v-if="borrowCount == loanCount">{{dxsz}}</span>
+            <span v-if="heji">{{dxsz}}</span>
           </div>
           <div class="total-borrow" :class="borrowCount < 0 ? 'redbox' : ''">
             <div>{{borrowAllArray[12] == undefined ? '' : borrowAllArray[12]}}</div>
@@ -121,10 +125,10 @@
         </div>
         <!-- 审核信息 -->
         <div class="bottom">
-          <span>制作人:</span>
-          <span>制作时间:</span>
-          <span>审核人:</span>
-          <span>审核时间:</span>
+          <span>制作人 :   {{user_id}}</span>
+          <span>制作时间 :    {{create_at}}</span>
+          <span>审核人 :  {{audit_user}}</span>
+          <span>审核时间 :  {{audit_time}}</span>
         </div>
       </div>
     </el-card>
@@ -134,12 +138,36 @@
       <el-button size="small" @click="saveS">保存(Ctrl+S)</el-button>
     </div>
     <!-- 点击保存之后 出现新的按钮 -->
-    <div class="footer1" v-if="saveOnly">
+    <div class="footer1" v-if="saveOnly && auditShow">
       <el-button size="small">打印</el-button>
-      <el-button size="small" @click='saveOnly=false'>新增</el-button>
-      <el-button size="small">保存(Ctrl+S)</el-button>
-      <el-button size="small">审核</el-button>
-      <el-button size="small" class="danger">删除</el-button>
+      <el-button size="small" @click='newVoucher'>新增</el-button>
+      <el-button size="small" @click="saveS">保存(Ctrl+S)</el-button>
+      <el-button size="small" @click="handleAudit">审核</el-button>
+      <el-button size="small" class="danger" @click="dialogVisible = true">删除</el-button>
+    </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      >
+      <span>
+        您确定要删除凭证吗？<br>
+        <br>
+        删除后将不可恢复，并会产生断号。
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary"  @click="handleDel">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 点击审核之后 -->
+    <div class="footer" v-if="!auditShow">
+      <el-button size="small">打印</el-button>
+      <el-button size="small" @click="handleAudit2">反审核</el-button>
+      <el-button size="small" @click='newVoucher'>新增</el-button>
+    </div>
+    <div class="audit" v-if="!auditShow">
+      <img src="./audit.png" alt="">
     </div>
 </div>
     
@@ -159,21 +187,33 @@ export default {
     },
     data() {
       return {
-        value1: '',//日期
-        restaurants: [],
+        voucher_date: '',//日期
+        // restaurants: [],
+        user_id:'',//制作人
+        create_at:"",//制作时间
+        audit_user:'',//审核人
+        audit_time:'',//审核时间
         state1: '',
         list: [{},{},{},{}],
         borrowAll: '',
         loanAll: '',
         borrowAllArray: [],
         loanAllArray: [],
-        num:1,
+        profile:1,//凭证号
+        newProfile:0,//新增的凭证号
         fujian:0,
         borrowCount: 0,
         loanCount: 0,
         dxsz: '',
+        auditShow:true,
         saveOnly:false,
-        digest: ''
+        digest: '',
+        update: 0,
+        period: '',//期间
+        heji: false,
+        id:"",//凭证id
+        dialogVisible: false, //删除弹框
+        audit_status:'1'//审核状态
       }
     },
     watch: {
@@ -183,38 +223,51 @@ export default {
       }
     },
     methods:{
-      // 下拉建议 组件
-      querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      loadAll() {
-        return [
-          { "value": "提现" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "利息收入" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-          { "value": "支付工资" },
-           ];
-      },
-      // 左右按钮
-      handleRight(){
-        console.log('right')
-      },
-      handleLeft(){
-        console.log('left')
+      // 左右切换按钮
+      async handleCut(value){
+        this.saveOnly = true
+        const id = Number(this.id)+value
+        if(id+2 >=this.newProfile || id<1){
+          this.$message({
+            type: 'warning',
+            message: '未查询到凭证!'
+          })
+          return
+        }
+        await Promise.resolve(this.api.voucher['voucherDetail']({book_id:1,period:201908,id:id+1}))
+        .then(res=>{
+          console.log(res.data)
+          this.profile = res.data.profile
+          this.id = Number(res.data.id)-1
+          this.voucher_date = res.data.voucher_date
+          this.fujian = res.data.bills_num
+          this.user_id = res.data.user_id
+          this.list = res.data.detail
+          this.update = 1
+          this.period = res.data.period
+          this.create_at = res.data.create_at
+          this.borrowCount = Number(res.data.amount)
+          this.loanCount = Number(res.data.amount)
+          this.dxsz = this.daxie(Number(res.data.amount))
+          const borrowArray = this.typeFix(this.borrowCount + '')
+          const loanArray = this.typeFix(this.loanCount + '')
+          if(borrowArray[2] == "0") {
+          this.borrowAllArray = []
+        } else {
+          this.borrowAllArray = borrowArray
+        }
+        if(loanArray[2] == "0") {
+          this.loanAllArray = []
+        } else {
+          this.loanAllArray = loanArray
+        }
+          // 金额大写
+        if(this.borrowCount == this.loanCount) {
+          console.log(this.borrowCount)
+          this.dxsz = this.daxie(this.borrowCount)
+          this.heji = true
+        }
+        })
       },
       // 合计
       handleComponentsValue(val) {
@@ -249,7 +302,7 @@ export default {
       // 凭证号
       handleChange(value) {
         console.log(value);
-        this.num = value
+        this.profile = value
       },
       // 日期
       handleChangeDate(value){
@@ -260,6 +313,10 @@ export default {
       handleChangeNum(value){
         console.log(value.target.value)
         this.fujian = value.target.value
+      },
+      // 摘要 处理
+      handlesub(item) {
+        this.digest = item
       },
       // 增加行 
       handleAddRow(value){
@@ -275,13 +332,14 @@ export default {
         }
       },
       // 保存并新增
-      saveNew(){
-        console.log(111)
-        const digestList = this.list.filter(function(item){
-          item.digest != ''
+      async saveNew(){
+        console.log(this.list)
+        let digestList = 0; 
+        this.list.forEach(item=>{
+          item.digest != '' ? digestList++ : digestList
         })
-        console.log(digestList.length)
-        if(digestList.length < 2){
+        console.log(digestList)
+        if(digestList < 2){
           this.$message({
             type: 'warning',
             message: '有效数据不能少于两行!'
@@ -294,22 +352,107 @@ export default {
             })
           return;
           } 
+        // } 
+        await Promise.resolve(this.api.voucher['voucherAdd']({
+          user_id:1,
+          book_id:1,
+          period:201908,
+          profile:this.profile,
+          bills_num:0,
+          voucher_date:'2019-08-23',
+          detail:[
+            // {amountDr:3,amountCr:0,subject_id:3,digest:'办公用品1',sequenceNum:1},
+            {amountDr:0,amountCr:2,subject_id:6,digest:'办公用品2',sequenceNum:2},
+            // {amountDr:2,amountCr:0,subject_id:7,digest:'办公用品3',sequenceNum:3},
+            // {amountDr:0,amountCr:3,subject_id:8,digest:'办公用品4',sequenceNum:4},
+            ],
+          amount:33
+          }))
+        .then(res=>{
+          // alert(res.msg)
+        })
         }
       },
+      // 仅保存
       saveS(){
         console.log(222)
         this.saveOnly = true;
       },
-      // 摘要 处理
-      handlesub(item) {
-        this.digest = item
+      // 新增
+      async newVoucher(){
+        this.saveOnly=false
+        this.auditShow = true
+        // this.$router.push({path:'/voucher/addVoucher'})
+        this.list = [{},{},{},{}]
+        await Promise.resolve(this.api.voucher['initVoucher']({book_id:1,period:201908}))
+        .then(res=>{
+          console.log(res)
+          this.id = res.data.v_id
+          this.profile = Number(res.data.profile)+1
+          this.newProfile = Number(res.data.profile)+1
+        }).catch(err=>{
+          console.log(err)
+        })
+          this.voucher_date = ''
+          this.list = [{},{},{},{}]
+          this.fujian = 0
+          this.user_id = ''
+          this.period = ''
+          this.create_at = ''
+          this.borrowCount = ''
+          this.loanCount = ''
       },
+      // 删除
+      handleDel(){
+        Promise.resolve(this.api.voucher['voucherDel']({ids:[12],status:1}))
+        .then(res=>{
+          console.log(res)
+          if(res.status == 200){
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
+          this.dialogVisible = false
+        })
+      },
+      // 审核
+      handleAudit(){
+        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:2}))
+        .then(res=>{
+          console.log(res)
+          if(res.status == 200){
+            this.$message({
+              type: 'success',
+              message: '审核成功!'
+            })
+            this.auditShow = false
+            this.audit_status = res.audit_status
+          }
+        })
+      },
+      // 反审核
+      handleAudit2(){
+        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:3}))
+        .then(res=>{
+          console.log(res)
+          if(res.status == 200){
+            this.$message({
+              type: 'success',
+              message: '反审核成功!'
+            })
+          this.auditShow = true
+          }
+        })
+      }
     },
     async mounted() {
-      this.restaurants = this.loadAll();
-      await Promise.resolve(this.api.voucher({book_id:1,period:201908}))
+      await Promise.resolve(this.api.voucher['initVoucher']({book_id:1,period:201908}))
       .then(res=>{
         console.log(res)
+        this.id = res.data.v_id
+        this.profile = Number(res.data.profile)+1
+        this.newProfile = Number(res.data.profile)+1
       }).catch(err=>{
         console.log(err)
       })
@@ -330,7 +473,6 @@ export default {
   width: 1220px;
   padding: 10px;
   margin: 0 auto;
-
 }
 .card {
   overflow-y: auto;
@@ -583,7 +725,7 @@ export default {
     margin-top: 20px;
     margin-bottom: 20px;
     span{
-      margin-right: 200px;
+      margin-right: 150px;
     }
   }
 }
@@ -605,5 +747,16 @@ export default {
 }
 .redbox {
   color: red
+}
+.audit{
+  width: 196px;
+  position:fixed;
+  top:80px;
+  right: 350px;
+  height: 117px;
+  border: 1px solid transparent;
+  img{
+    width: 100%;
+  }
 }
 </style>
