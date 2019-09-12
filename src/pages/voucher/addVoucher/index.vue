@@ -321,7 +321,8 @@ export default {
       // 增加行 
       handleAddRow(value){
         const {type,index} = value
-        this.list.splice(index,0,{})
+        this.list.splice(index,0,{borrow: 1, loan: ""})
+        console.log(this.list)
       },
       // 删除行
       handleDeleteRow(value){
