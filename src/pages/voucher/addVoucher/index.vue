@@ -127,7 +127,7 @@
         <div class="bottom">
           <span>制作人 :   {{user_id}}</span>
           <span>制作时间 :    {{create_at}}</span>
-          <span class="auditp">审核人 :  {{audit_user}}</span>
+          <span>审核人 :  {{audit_user}}</span>
           <span>审核时间 :  {{audit_time}}</span>
         </div>
       </div>
@@ -161,13 +161,13 @@
       </span>
     </el-dialog>
     <!-- 点击审核之后 -->
-    <div class="footer" v-if="!auditShow&& this.audit_status == '2'">
+    <div class="footer" v-if="!auditShow">
       <el-button size="small">打印</el-button>
       <el-button size="small" @click="handleAudit2">反审核</el-button>
       <el-button size="small" @click='newVoucher'>新增</el-button>
     </div>
-    <div class="audit" v-if="!auditShow && this.audit_status == '2'">
-      <img src="./审核.svg" alt="">
+    <div class="audit" v-if="!auditShow">
+      <img src="./audit.png" alt="">
     </div>
 </div>
     
@@ -193,7 +193,6 @@ export default {
         create_at:"",//制作时间
         audit_user:'',//审核人
         audit_time:'',//审核时间
-        audit_status:'1',//审核状态
         state1: '',
         list: [{},{},{},{}],
         borrowAll: '',
@@ -214,6 +213,7 @@ export default {
         heji: false,
         id:"",//凭证id
         dialogVisible: false, //删除弹框
+        audit_status:'1'//审核状态
       }
     },
     watch: {
@@ -247,11 +247,6 @@ export default {
         await Promise.resolve(this.api.voucher['voucherDetail']({book_id:1,period:201908,id:id+1}))
         .then(res=>{
           console.log(res.data)
-          this.audit_status==res.data.audit_status
-          this.audit_user = ''
-          this.audit_time = ''
-          this.auditShow = true
-          
           this.profile = res.data.profile
           this.id = Number(res.data.id)-1
           this.voucher_date = res.data.voucher_date
@@ -336,7 +331,8 @@ export default {
       // 增加行 
       handleAddRow(value){
         const {type,index} = value
-        this.list.splice(index,0,{})
+        this.list.splice(index,0,{borrow: 1, loan: ""})
+        console.log(this.list)
       },
       // 删除行
       handleDeleteRow(value){
@@ -418,7 +414,7 @@ export default {
       },
       // 删除
       handleDel(){
-        Promise.resolve(this.api.voucher['voucherDel']({ids:[this.id],status:1}))
+        Promise.resolve(this.api.voucher['voucherDel']({ids:[12],status:1}))
         .then(res=>{
           console.log(res)
           if(res.status == 200){
@@ -432,7 +428,7 @@ export default {
       },
       // 审核
       handleAudit(){
-        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:2,is_batch:2}))
+        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:2}))
         .then(res=>{
           console.log(res)
           if(res.status == 200){
@@ -441,15 +437,13 @@ export default {
               message: '审核成功!'
             })
             this.auditShow = false
-            this.audit_status = res.data.audit_status
-            this.audit_user = res.data.audit_user
-            this.audit_time = res.data.audit_time
+            this.audit_status = res.audit_status
           }
         })
       },
       // 反审核
       handleAudit2(){
-        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:3,is_batch:2}))
+        Promise.resolve(this.api.voucher['voucherAudit']({ids:[this.id],audit:3}))
         .then(res=>{
           console.log(res)
           if(res.status == 200){
@@ -458,9 +452,6 @@ export default {
               message: '反审核成功!'
             })
           this.auditShow = true
-          this.audit_status = res.data.audit_status
-          this.audit_user = res.data.audit_user
-          this.audit_time = res.data.audit_time
           }
         })
       }
@@ -746,9 +737,6 @@ export default {
     span{
       margin-right: 150px;
     }
-    .auditp{
-      margin-right: 80px;
-    }
   }
 }
 // 保存按钮
@@ -771,11 +759,11 @@ export default {
   color: red
 }
 .audit{
-  width: 146px;
+  width: 196px;
   position:fixed;
-  top:100px;
-  right: 370px;
-  height: 50px;
+  top:80px;
+  right: 350px;
+  height: 117px;
   border: 1px solid transparent;
   img{
     width: 100%;
