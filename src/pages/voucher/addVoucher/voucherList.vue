@@ -20,8 +20,8 @@
             :fetch-suggestions="querySearch"
             :trigger-on-focus="false"
             @select="handleSelect"
-            @click="handleDigestChilk">
-          </el-autocomplete>
+            @click="handleDigestChilk"
+          ></el-autocomplete>
         </div>
         <!-- 科目 -->
         <div class="subject">
@@ -107,18 +107,14 @@
 <script>
 export default {
   props: {
-    'index': {
-      type: Number,
+    index: {
+      type: Number
     },
     digest: {
       type: String
     },
-    itemValue: {
-
-    },
-    updateover: {
-
-    }
+    itemValue: {},
+    updateover: {}
   },
   data() {
     return {
@@ -128,7 +124,7 @@ export default {
       loanValue: "",
       restaurants: [],
       restaurants1: [],
-      state1: '',
+      state1: "",
       state2: "",
       borrowCountArray: [],
       loanCountArray: [],
@@ -136,45 +132,45 @@ export default {
     };
   },
 
-  watch:{
-    digest: function(){
-      this.$emit('sub',this.state1)
+  watch: {
+    digest: function() {
+      this.$emit("sub", this.state1);
     },
-    updateover: function(){
-      if(this.updateover == 1) {
-        this.borrowValue = this.itemValue.amountDr
-        this.loanValue = this.itemValue.amountCr
-        this.borrowCountArray = this.typeFix(this.borrowValue)
-        this.loanCountArray = this.typeFix(this.loanValue)
-        this.state1 = this.itemValue.digest
-        this.state2 = this.itemValue.subject_id
-        console.log(this.borrowValue,this.loanValue,this.state1,this.state2)
+    updateover: function() {
+      if (this.updateover == 1) {
+        this.borrowValue = this.itemValue.amountDr;
+        this.loanValue = this.itemValue.amountCr;
+        this.borrowCountArray = this.typeFix(this.borrowValue);
+        this.loanCountArray = this.typeFix(this.loanValue);
+        this.state1 = this.itemValue.digest;
+        this.state2 = this.itemValue.subject_id;
+        console.log(this.borrowValue, this.loanValue, this.state1, this.state2);
       }
     }
   },
   mounted() {
     this.restaurants = this.loadAll();
-    this.subList()
-
+    this.subList();
   },
   methods: {
     // 摘要下拉建议 组件
     querySearch(queryString, cb) {
-      console.log(this.restaurants)
-      var results = this.restaurants
+      console.log(this.restaurants);
+      var results = this.restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     createFilter(queryString) {
       return restaurant => {
         return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !==
+          -1
         );
       };
     },
     loadAll() {
-      return
-       this.restaurants
+      return;
+      this.restaurants;
     },
     // 科目下拉
     querySearch1(queryString, cb) {
@@ -188,13 +184,14 @@ export default {
     createFilter1(queryString) {
       return restaurant => {
         return (
-          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+          restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) !==
+          -1
         );
       };
     },
     loadAll1() {
-      return
-       this.restaurants1
+      return;
+      this.restaurants1;
     },
     // 科目下拉选择
     handleSelect1(item) {
@@ -205,41 +202,43 @@ export default {
       console.log(item.value);
     },
     // 摘要 默认第一行摘要
-    handleFocus(item){
-      console.log(item)
-      if(this.state1 != this.digest) {
-        this.state1 = this.digest
+    handleFocus(item) {
+      console.log(item);
+      if (this.state1 != this.digest) {
+        this.state1 = this.digest;
       }
     },
     // 摘要列表
-    digestList(){
-      Promise.resolve(this.api.voucher['digestList']({name:this.state1}))
-      .then(res=>{
-        console.log(res)
-        this.restaurants = []
-        for(let i=0;i<res.data.list.length;i++){
-          this.restaurants.push({'value':res.data.list[i].name})
+    digestList() {
+      Promise.resolve(
+        this.api.voucher["digestList"]({ name: this.state1 })
+      ).then(res => {
+        console.log(res);
+        this.restaurants = [];
+        for (let i = 0; i < res.data.list.length; i++) {
+          this.restaurants.push({ value: res.data.list[i].name });
         }
-      })
+      });
     },
     // 科目列表
-    subList(){
-      Promise.resolve(this.api.set['subList']({company_id:1}))
-      .then(res=>{
-        console.log(res)
-        this.restaurants1 = []
-        for(let i=0;i<res.data.list.length;i++){
-          this.restaurants1.push({'value':res.data.list[i].code+res.data.list[i].name})
+    subList() {
+      Promise.resolve(this.api.set["subList"]({ company_id: 1 })).then(res => {
+        console.log(res);
+        this.restaurants1 = [];
+        for (let i = 0; i < res.data.list.length; i++) {
+          this.restaurants1.push({
+            value: res.data.list[i].code + res.data.list[i].name
+          });
         }
-      })
+      });
     },
     // 摘要
-    async handleInput(){
-      await this.digestList()
+    async handleInput() {
+      await this.digestList();
     },
     // 科目
-    async handleFocus1(){
-      await this.subList()
+    async handleFocus1() {
+      await this.subList();
     },
     // 借方
     borrowClick() {
@@ -250,15 +249,19 @@ export default {
       });
     },
     borrowBlurEvent() {
-      const array= this.typeFix(this.borrowValue)
-      this.borrowCountArray = array
-      console.log(this.borrowValue)
-      if(this.borrowValue != ""){
+      const array = this.typeFix(this.borrowValue);
+      this.borrowCountArray = array;
+      console.log(this.borrowValue);
+      if (this.borrowValue != "") {
         this.loanValue = "";
         this.loanCountArray = [];
       }
       this.borrowInput = false;
-      this.$emit('flag',{ borrow: this.borrowValue,loan: this.loanValue,index: this.index })
+      this.$emit("flag", {
+        borrow: this.borrowValue,
+        loan: this.loanValue,
+        index: this.index
+      });
     },
     // 贷方
     loanClick() {
@@ -270,45 +273,49 @@ export default {
       });
     },
     loanBlurEvent() {
-      const array = this.typeFix(this.loanValue)
-      this.loanCountArray = array
-      if(this.loanValue != ""){
+      const array = this.typeFix(this.loanValue);
+      this.loanCountArray = array;
+      if (this.loanValue != "") {
         this.borrowValue = "";
         this.borrowCountArray = [];
-      } 
+      }
       this.loanInput = false;
-      this.$emit('flag',{borrow: this.borrowValue,loan: this.loanValue,index: this.index})
+      this.$emit("flag", {
+        borrow: this.borrowValue,
+        loan: this.loanValue,
+        index: this.index
+      });
     },
     // 增/删行
     handleAdd() {
-      this.$emit('addclick',{type:"add",index:this.index})
+      this.$emit("addclick", { type: "add", index: this.index });
     },
     handleDelete() {
-      this.$emit('deleteclick',{type:"delete",index:this.index})
+      this.$emit("deleteclick", { type: "delete", index: this.index });
     },
     handleDigestChilk() {
-      if(this.state1 != this.digest) {
-        this.state1 = this.digest
+      if (this.state1 != this.digest) {
+        this.state1 = this.digest;
       }
     },
     nextFocus(index) {
       this.focusIndex = index + 1;
-      console.log(this.focusIndex)
+      console.log(this.focusIndex);
     }
-  },
+  }
   // mounted() {
-    
-    // this.$bus.$on('detail',(res)=>{
-    //     console.log(res)
-    //     this.state1 = res.digest;
-    //     this.state2 = res.subject_id
-    //     if(res.amountDr != 0.00){
-    //       this.borrowValue = Array(res.amountDr)
-    //     }
-    //     if(res.amountCr != 0.00){
-    //       this.loanValue = Array(res.amountCr)
-    //     }
-    // });
+
+  // this.$bus.$on('detail',(res)=>{
+  //     console.log(res)
+  //     this.state1 = res.digest;
+  //     this.state2 = res.subject_id
+  //     if(res.amountDr != 0.00){
+  //       this.borrowValue = Array(res.amountDr)
+  //     }
+  //     if(res.amountCr != 0.00){
+  //       this.loanValue = Array(res.amountCr)
+  //     }
+  // });
   // }
 };
 </script>
@@ -384,7 +391,7 @@ export default {
     border-top: 1px solid #666666;
     line-height: 60px;
   }
-  
+
   .total {
     flex: 2;
     display: flex;
@@ -481,7 +488,7 @@ export default {
     }
   }
   .red {
-    color: red
+    color: red;
   }
 }
 </style>
