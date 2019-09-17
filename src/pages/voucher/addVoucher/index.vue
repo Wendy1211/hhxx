@@ -128,7 +128,7 @@
                     class="inline-input"
                     v-model="item.state2"
                     @focus="handleFocus1(item)"
-                    @input="handleinput1(item)"
+                    @input="handleinput1"
                     :fetch-suggestions="querySearch1"
                     placeholder
                     @select="handleSelect1"
@@ -519,7 +519,7 @@ export default {
     },
     // 仅保存
     saveS() {
-      console.log(222);
+      // console.log(222);
       this.saveOnly = true;
     },
     // 新增
@@ -532,7 +532,7 @@ export default {
         this.api.voucher["initVoucher"]({ book_id: 1, period: 201908 })
       )
         .then(res => {
-          console.log(res);
+          // console.log(res);
           this.id = res.data.v_id;
           this.profile = Number(res.data.profile) + 1;
           this.newProfile = Number(res.data.profile) + 1;
@@ -554,7 +554,7 @@ export default {
       Promise.resolve(
         this.api.voucher["voucherDel"]({ ids: [12], status: 1 })
       ).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status == 200) {
           this.$message({
             type: "success",
@@ -569,7 +569,7 @@ export default {
       Promise.resolve(
         this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 2 })
       ).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status == 200) {
           this.$message({
             type: "success",
@@ -587,7 +587,7 @@ export default {
       Promise.resolve(
         this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 3 })
       ).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status == 200) {
           this.$message({
             type: "success",
@@ -600,7 +600,7 @@ export default {
               id: id + 1
             })
           ).then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             this.profile = res.data.profile;
             this.id = Number(res.data.id) - 1;
             this.voucher_date = res.data.voucher_date;
@@ -627,7 +627,7 @@ export default {
             }
             // 金额大写
             if (this.borrowCount == this.loanCount) {
-              console.log(this.borrowCount);
+              // console.log(this.borrowCount);
               this.dxsz = this.daxie(this.borrowCount);
               this.heji = true;
             }
@@ -642,7 +642,7 @@ export default {
     handleAdd() {},
     // 摘要下拉建议 组件
     querySearch(queryString, cb) {
-      console.log(this.restaurants);
+      // console.log(this.restaurants);
       var results = this.restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
@@ -680,7 +680,7 @@ export default {
     },
     // 摘要下拉选择
     handleSelect(item) {
-      console.log(item.value);
+      // console.log(item.value);
     },
     // 科目下拉选择
     handleSelect1(item) {
@@ -693,10 +693,10 @@ export default {
 
     },
     borrowClick(item) {
-      console.log(111)
-      console.log(item)
+      // console.log(111)
+      // console.log(item)
       item.borrowInput = true;
-      console.log(222);
+      // console.log(222);
       this.$set(item,item.borrowInput,true)
       // this.$nextTick(() => {
       //   item.$refs.borrowgain.focus()
@@ -774,6 +774,9 @@ export default {
     // async handleinput1(item){
     //   await this.subList(item)
     // },
+    handleinput1() {
+
+    },
     nextFocus(index) {
       this.focusIndex = index + 1;
       console.log(this.focusIndex)
