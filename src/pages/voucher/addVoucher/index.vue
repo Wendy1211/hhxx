@@ -136,8 +136,8 @@
                 </div>
                 <!-- 借 -->
                 <div class="borrow">
-                  <div class="borrow-bottom1" @click="item.borrowInput = !item.borrowInput">
-                    <div class="div-box" v-show="!(item.borrowInput)" :class="item.borrowValue < 0 ? 'red' : ''">
+                  <div class="borrow-bottom1" @click="borrowClick(item)">
+                    <div class="div-box" v-show="!item.borrowInput" :class="item.borrowValue < 0 ? 'red' : ''">
                       <div>{{item.borrowCountArray[12] == undefined ? '' : item.borrowCountArray[12]}}</div>
                       <div>{{item.borrowCountArray[11] == undefined ? '' : item.borrowCountArray[11]}}</div>
                       <div>{{item.borrowCountArray[10] == undefined ? '' : item.borrowCountArray[10]}}</div>
@@ -166,7 +166,7 @@
                 </div>
                 <!-- 贷 -->
                 <div class="loan">
-                  <div class="loan-bottom1" @click="loanClick">
+                  <div class="loan-bottom1" @click="loanClick(item)">
                     <div class="div-box" v-show="!item.loanInput" :class="item.loanValue < 0 ? 'red' : ''">
                       <div>{{item.loanCountArray[12] == undefined ? '' : item.loanCountArray[12]}}</div>
                       <div>{{item.loanCountArray[11] == undefined ? '' : item.loanCountArray[11]}}</div>
@@ -262,9 +262,8 @@
     </div>
     <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
       <span>
-        您确定要删除凭证吗？
-        <br />
-        <br />删除后将不可恢复，并会产生断号。
+        您确定要删除凭证吗？<br /><br />
+        删除后将不可恢复，并会产生断号。
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -278,7 +277,7 @@
       <el-button size="small" @click="newVoucher">新增</el-button>
     </div>
     <div class="audit" v-if="!auditShow">
-      <img src="./audit.png" alt />
+      <img src="./审核.svg" alt />
     </div>
   </div>
 </template>
@@ -359,13 +358,13 @@ export default {
     async handleCut(value) {
       this.saveOnly = true;
       const id = Number(this.id) + value;
-      if (id + 2 >= this.newProfile || id < 1) {
-        this.$message({
-          type: "warning",
-          message: "未查询到凭证!"
-        });
-        return;
-      }
+      // if (id + 2 >= this.newProfile || id < 1) {
+      //   this.$message({
+      //     type: "warning",
+      //     message: "未查询到凭证!"
+      //   });
+      //   return;
+      // }
       await Promise.resolve(
         this.api.voucher["voucherDetail"]({
           book_id: 1,
@@ -373,37 +372,40 @@ export default {
           id: id + 1
         })
       ).then(res => {
-        console.log(res.data);
+        console.log(res);
         this.profile = res.data.profile;
         this.id = Number(res.data.id) - 1;
         this.voucher_date = res.data.voucher_date;
         this.fujian = res.data.bills_num;
         this.user_id = res.data.user_id;
-        this.list = res.data.detail;
-        this.update = 1;
-        this.period = res.data.period;
-        this.create_at = res.data.create_at;
-        this.borrowCount = Number(res.data.amount);
-        this.loanCount = Number(res.data.amount);
-        this.dxsz = this.daxie(Number(res.data.amount));
-        const borrowArray = this.typeFix(this.borrowCount + "");
-        const loanArray = this.typeFix(this.loanCount + "");
-        if (borrowArray[2] == "0") {
-          this.borrowAllArray = [];
-        } else {
-          this.borrowAllArray = borrowArray;
-        }
-        if (loanArray[2] == "0") {
-          this.loanAllArray = [];
-        } else {
-          this.loanAllArray = loanArray;
-        }
-        // 金额大写
-        if (this.borrowCount == this.loanCount) {
-          console.log(this.borrowCount);
-          this.dxsz = this.daxie(this.borrowCount);
-          this.heji = true;
-        }
+        // this.list = res.data.detail;
+        // this.list.forEach(item => {
+          this.list.item.state1 = 'hhh'
+        // });
+        // this.update = 1;
+        // this.period = res.data.period;
+        // this.create_at = res.data.create_at;
+        // this.borrowCount = Number(res.data.amount);
+        // this.loanCount = Number(res.data.amount);
+        // this.dxsz = this.daxie(Number(res.data.amount));
+        // const borrowArray = this.typeFix(this.borrowCount + "");
+        // const loanArray = this.typeFix(this.loanCount + "");
+        // if (borrowArray[2] == "0") {
+        //   this.borrowAllArray = [];
+        // } else {
+        //   this.borrowAllArray = borrowArray;
+        // }
+        // if (loanArray[2] == "0") {
+        //   this.loanAllArray = [];
+        // } else {
+        //   this.loanAllArray = loanArray;
+        // }
+        // // 金额大写
+        // if (this.borrowCount == this.loanCount) {
+        //   console.log(this.borrowCount);
+        //   this.dxsz = this.daxie(this.borrowCount);
+        //   this.heji = true;
+        // }
       });
     },
     // 合计
@@ -499,7 +501,7 @@ export default {
             bills_num: 0,
             voucher_date: "2019-08-23",
             detail: [
-              // {amountDr:3,amountCr:0,subject_id:3,digest:'办公用品1',sequenceNum:1},
+              {amountDr:3,amountCr:0,subject_id:3,digest:'办公用品1',sequenceNum:1},
               {
                 amountDr: 0,
                 amountCr: 2,
@@ -516,6 +518,7 @@ export default {
           // alert(res.msg)
         });
       }
+      this.newVoucher()
     },
     // 仅保存
     saveS() {
@@ -526,7 +529,6 @@ export default {
     async newVoucher() {
       this.saveOnly = false;
       this.auditShow = true;
-      // this.$router.push({path:'/voucher/addVoucher'})
       this.list = [{}, {}, {}, {}];
       await Promise.resolve(
         this.api.voucher["initVoucher"]({ book_id: 1, period: 201908 })
@@ -548,11 +550,22 @@ export default {
       this.create_at = "";
       this.borrowCount = "";
       this.loanCount = "";
+      this.list.forEach(item => {
+        item.borrow = "";
+        item.loan = "";
+        item.borrowCountArray= [];
+        item.loanCountArray= [];
+        item.borrowInput = false;
+        item.loanInput = false;
+        item.focusIndex = 1;
+        item.borrowValue = '';
+        item.loanValue = '';
+      });
     },
     // 删除
     handleDel() {
       Promise.resolve(
-        this.api.voucher["voucherDel"]({ ids: [12], status: 1 })
+        this.api.voucher["voucherDel"]({ ids: [this.id], status: 1 })
       ).then(res => {
         // console.log(res);
         if (res.status == 200) {
@@ -567,7 +580,7 @@ export default {
     // 审核
     handleAudit() {
       Promise.resolve(
-        this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 2 })
+        this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 2 ,is_batch:2})
       ).then(res => {
         // console.log(res);
         if (res.status == 200) {
@@ -575,17 +588,17 @@ export default {
             type: "success",
             message: "审核成功!"
           });
-          // this.auditShow = false
-          // this.audit_status = res.audit_status
-          // this.audit_user = res.data.audit_user
-          // this.audit_time = res.data.audit_time
+          this.auditShow = false
+          this.audit_status = res.audit_status
+          this.audit_user = res.data.audit_user
+          this.audit_time = res.data.audit_time
         }
       });
     },
     // 反审核
     handleAudit2() {
       Promise.resolve(
-        this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 3 })
+        this.api.voucher["voucherAudit"]({ ids: [this.id], audit: 3,is_batch:2 })
       ).then(res => {
         // console.log(res);
         if (res.status == 200) {
@@ -593,49 +606,49 @@ export default {
             type: "success",
             message: "反审核成功!"
           });
-          Promise.resolve(
-            this.api.voucher["voucherDetail"]({
-              book_id: 1,
-              period: 201908,
-              id: id + 1
-            })
-          ).then(res => {
-            // console.log(res.data);
-            this.profile = res.data.profile;
-            this.id = Number(res.data.id) - 1;
-            this.voucher_date = res.data.voucher_date;
-            this.fujian = res.data.bills_num;
-            this.user_id = res.data.user_id;
-            this.list = res.data.detail;
-            this.update = 1;
-            this.period = res.data.period;
-            this.create_at = res.data.create_at;
-            this.borrowCount = Number(res.data.amount);
-            this.loanCount = Number(res.data.amount);
-            this.dxsz = this.daxie(Number(res.data.amount));
-            const borrowArray = this.typeFix(this.borrowCount + "");
-            const loanArray = this.typeFix(this.loanCount + "");
-            if (borrowArray[2] == "0") {
-              this.borrowAllArray = [];
-            } else {
-              this.borrowAllArray = borrowArray;
-            }
-            if (loanArray[2] == "0") {
-              this.loanAllArray = [];
-            } else {
-              this.loanAllArray = loanArray;
-            }
-            // 金额大写
-            if (this.borrowCount == this.loanCount) {
-              // console.log(this.borrowCount);
-              this.dxsz = this.daxie(this.borrowCount);
-              this.heji = true;
-            }
-          });
-          // this.auditShow = true
-          // this.audit_status = res.data.audit_status
-          // this.audit_user = res.data.audit_user
-          // this.audit_time = res.data.audit_time
+          // Promise.resolve(
+          //   this.api.voucher["voucherDetail"]({
+          //     book_id: 1,
+          //     period: 201908,
+          //     id: id + 1
+          //   })
+          // ).then(res => {
+          //   console.log(res.data);
+          //   this.profile = res.data.profile;
+          //   this.id = Number(res.data.id) - 1;
+          //   this.voucher_date = res.data.voucher_date;
+          //   this.fujian = res.data.bills_num;
+          //   this.user_id = res.data.user_id;
+          //   this.list = res.data.detail;
+          //   this.update = 1;
+          //   this.period = res.data.period;
+          //   this.create_at = res.data.create_at;
+          //   this.borrowCount = Number(res.data.amount);
+          //   this.loanCount = Number(res.data.amount);
+          //   this.dxsz = this.daxie(Number(res.data.amount));
+          //   const borrowArray = this.typeFix(this.borrowCount + "");
+          //   const loanArray = this.typeFix(this.loanCount + "");
+          //   if (borrowArray[2] == "0") {
+          //     this.borrowAllArray = [];
+          //   } else {
+          //     this.borrowAllArray = borrowArray;
+          //   }
+          //   if (loanArray[2] == "0") {
+          //     this.loanAllArray = [];
+          //   } else {
+          //     this.loanAllArray = loanArray;
+          //   }
+          //   // 金额大写
+          //   if (this.borrowCount == this.loanCount) {
+          //     console.log(this.borrowCount);
+          //     this.dxsz = this.daxie(this.borrowCount);
+          //     this.heji = true;
+          //   }
+          // });
+          this.auditShow = true
+          this.audit_status = res.data.audit_status
+          this.audit_user = res.data.audit_user
+          this.audit_time = res.data.audit_time
         }
       });
     },
@@ -698,9 +711,9 @@ export default {
       item.borrowInput = true;
       // console.log(222);
       this.$set(item,item.borrowInput,true)
-      // this.$nextTick(() => {
-      //   item.$refs.borrowgain.focus()
-      // })
+      this.$nextTick(() => {
+        this.$refs.borrowgain.focus()
+      })
     },
     borrowBlurEvent(item) {
       const array = this.typeFix(item.borrowValue);
@@ -719,10 +732,11 @@ export default {
     },
     loanClick(item) {
       item.loanInput = true;
-      this.$nextTick(() => {
-        // 点击 出现input 同时获得焦点
-        this.$refs.loangain.focus();
-      });
+      this.$set(item,item.loanInput,true)
+      // this.$nextTick(() => {
+      //   // 点击 出现input 同时获得焦点
+      //  this.$refs.loangain.focus();
+      // });
     },
     loanBlurEvent(item) {
       const array = this.typeFix(item.loanValue);
@@ -774,7 +788,7 @@ export default {
     // async handleinput1(item){
     //   await this.subList(item)
     // },
-    handleinput1() {
+    handleinput1(){
 
     },
     nextFocus(index) {
@@ -996,13 +1010,14 @@ export default {
       flex: 1;
       text-align: center;
       border-left: 1px solid #666666;
-      border-top: 1.5px solid #666666;
+      border-top: 1px solid #666666;
       .borrow-top {
         height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
+        border-top: 1px solid #666666;
         border-bottom: 1px solid #666666;
       }
       .borrow-bottom {
@@ -1030,7 +1045,7 @@ export default {
       flex: 1;
       text-align: center;
       border: 1px solid #666666;
-      border-top: 1.5px solid #666666;
+      border-top: 1px solid #666666;
       border-right: 1.5px solid #666666;
       border-bottom: none;
       .loan-top {
@@ -1038,6 +1053,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
+        border-top: 1px solid #666666;
         border-bottom: 1px solid #666666;
         box-sizing: border-box;
       }
